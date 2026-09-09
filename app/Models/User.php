@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -45,5 +46,36 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi & Helper Methods (Tambahan dari Claude)
+    |--------------------------------------------------------------------------
+    */
+
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class, 'borrower_id');
+    }
+
+    public function activeLoans()
+    {
+        return $this->loans()->whereIn('status', ['pending', 'borrowed', 'overdue']);
+    }
+
+    public function unpaidFines(): int
+    {
+        return (int) $this->loans()->whereNull('fine_paid_at')->sum('fine_amount');
+    }
+
+    public function isMember(): bool
+    {
+        return $this->role === 'member';
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }

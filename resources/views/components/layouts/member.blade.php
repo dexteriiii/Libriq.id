@@ -33,7 +33,7 @@
             <div class="flex justify-between items-center h-16">
                 {{-- Logo & Desktop Nav --}}
                 <div class="flex items-center gap-8">
-                    <a href="{{ route('member.catalog') ?? '#' }}" class="flex items-center gap-2.5">
+                    <a href="{{ route('member.dashboard') }}" class="flex items-center gap-2.5">
                         <svg class="w-7 h-7" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="4" y="6" width="8" height="28" rx="2" fill="#ea580c" opacity="0.9"/>
                             <rect x="14" y="4" width="8" height="32" rx="2" fill="#ea580c"/>
@@ -44,43 +44,37 @@
                     </a>
                     
                     <nav class="hidden md:flex items-center gap-6">
-                        <a href="{{ route('member.catalog') ?? '#' }}" class="{{ request()->routeIs('member.catalog') ? 'text-orange-600 font-semibold' : 'text-stone-600 hover:text-stone-900 font-medium' }} transition-colors">Eksplorasi</a>
-                        <a href="#" class="text-stone-600 hover:text-stone-900 font-medium transition-colors">Pinjamanku</a>
-                        <a href="#" class="text-stone-600 hover:text-stone-900 font-medium transition-colors">Riwayat</a>
+                        <a href="{{ route('member.dashboard') }}" class="{{ request()->routeIs('member.dashboard') ? 'text-orange-600 font-semibold' : 'text-stone-600 hover:text-stone-900 font-medium' }} transition-colors">Beranda</a>
+                        <a href="{{ route('member.catalog.index') }}" class="{{ request()->routeIs('member.catalog.*') ? 'text-orange-600 font-semibold' : 'text-stone-600 hover:text-stone-900 font-medium' }} transition-colors">Eksplorasi</a>
+                        <a href="{{ route('member.loans.history') }}" class="{{ request()->routeIs('member.loans.*') ? 'text-orange-600 font-semibold' : 'text-stone-600 hover:text-stone-900 font-medium' }} transition-colors">Peminjaman Saya</a>
                     </nav>
                 </div>
 
                 {{-- Search Bar (Desktop) --}}
                 <div class="hidden lg:flex flex-1 max-w-lg px-8">
-                    <div class="relative w-full">
+                    <form method="GET" action="{{ route('member.catalog.index') }}" class="relative w-full">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         </div>
-                        <input type="text" class="block w-full pl-10 pr-3 py-2 border border-stone-200 rounded-full leading-5 bg-stone-50 placeholder-stone-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 sm:text-sm transition-colors" placeholder="Cari judul buku, penulis, atau topik...">
-                    </div>
+                        <input type="text" name="q" value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-stone-200 rounded-full leading-5 bg-stone-50 placeholder-stone-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 sm:text-sm transition-colors" placeholder="Cari judul buku, penulis, atau ISBN...">
+                    </form>
                 </div>
 
                 {{-- User Profile & Mobile Menu --}}
                 <div class="flex items-center gap-4">
-                    <button class="lg:hidden p-2 text-stone-500 hover:text-stone-900 rounded-lg">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </button>
-                    
                     <div x-data="{ dropdownOpen: false }" class="relative">
                         <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="flex items-center gap-2 p-1 rounded-full hover:bg-stone-100 transition-colors focus:outline-none">
                             <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">
-                                ME
+                                {{ strtoupper(substr(auth()->user()?->name ?? 'M', 0, 2)) }}
                             </div>
                         </button>
                         
                         {{-- Dropdown --}}
                         <div x-show="dropdownOpen" x-cloak class="absolute right-0 mt-2 w-48 bg-white border border-stone-200 rounded-xl shadow-lg py-1 z-50">
                             <div class="px-4 py-2 border-b border-stone-100">
-                                <p class="text-sm font-medium text-stone-900">Member User</p>
-                                <p class="text-xs text-stone-500 truncate">member@libriq.id</p>
+                                <p class="text-sm font-medium text-stone-900">{{ auth()->user()?->name ?? 'Member User' }}</p>
+                                <p class="text-xs text-stone-500 truncate">{{ auth()->user()?->email ?? 'member@libriq.id' }}</p>
                             </div>
-                            <a href="#" class="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-50">Profil Saya</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-50">Denda & Tagihan</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>

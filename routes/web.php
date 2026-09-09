@@ -27,13 +27,13 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Dashboard redirect based on role (Mock implementation)
+    // Dashboard redirect based on role
     Route::get('/dashboard', function () {
         $user = auth()->user();
         if ($user && $user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
-        return redirect()->route('member.catalog');
+        return redirect()->route('member.dashboard');
     })->name('dashboard');
 
     // Admin Routes (Mock)
@@ -45,8 +45,6 @@ Route::middleware('auth')->group(function () {
         return view('admin.books');
     })->name('admin.books');
 
-    // Member Routes (Mock)
-    Route::get('/catalog', function () {
-        return view('member.catalog');
-    })->name('member.catalog');
+    // Load Member Routes
+    require __DIR__.'/member.php';
 });
