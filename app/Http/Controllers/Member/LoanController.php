@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Loan;
+use App\Models\Notification;
+use App\Models\User;
+use App\Services\LoanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -78,6 +81,17 @@ class LoanController extends Controller
                 'book_id' => $lockedBook->id,
                 'status' => 'pending',
             ]);
+
+            // Kirim notifikasi ke semua admin perpustakaan
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                Notification::create([
+                    'user_id' => $admin->id,
+                    'type' => 'loan_requested',
+                    'message' => "Permintaan Peminjaman: {$user->name} mengajukan peminjaman buku \"{$lockedBook->title}\".",
+                    'created_at' => now(),
+                ]);
+            }
         });
 
         return redirect()
@@ -94,5 +108,21 @@ class LoanController extends Controller
         $loan->delete();
 
         return back()->with('success', 'Permintaan peminjaman dibatalkan.');
+    }
+
+    /** Member mengembalikan buku yang sedang dipinjam */
+    public function returnBook(Loan $loan, LoanService $loanService): RedirectResponse
+    {
+        abort_unless($loan->borrower_id === Auth::id(), 403);
+        abort_unless(in_array($loan->status, ['borrowed', 'overdue']), 422, 'Hanya buku yang sedang dipinjam atau overdue yang bisa dikembalikan.');
+
+        $fine = $loanService->processReturn($loan);
+
+        $msg = 'Buku berhasil dikembalikan!';
+        if ($fine > 0) {
+            $msg .= ' Kamu memiliki denda sebesar Rp' . number_format($fine, 0, ',', '.') . '.';
+        }
+
+        return back()->with('success', $msg);
     }
 }

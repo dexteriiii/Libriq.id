@@ -36,15 +36,9 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('member.dashboard');
     })->name('dashboard');
 
-    // Admin Routes (Mock)
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-
-    Route::get('/admin/books', function () {
-        return view('admin.books');
-    })->name('admin.books');
-
     // Load Member Routes
     require __DIR__.'/member.php';
 });
+
+// Admin Routes (terpisah — middleware diatur di dalam admin.php)
+require __DIR__.'/admin.php';

@@ -3,22 +3,18 @@
 use App\Http\Controllers\Member\CatalogController;
 use App\Http\Controllers\Member\DashboardController;
 use App\Http\Controllers\Member\LoanController;
+use App\Http\Controllers\Member\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Member Routes
 |--------------------------------------------------------------------------
-| Tambahkan require ini di routes/web.php:
-|   require __DIR__.'/member.php';
-|
-| Middleware 'role:member' mengasumsikan kamu sudah punya middleware/gate
-| yang memverifikasi Auth::user()->role === 'member'. Jika belum, ganti
-| dengan Gate::allows() manual di controller, atau pakai package
-| spatie/laravel-permission sesuai rekomendasi PRD Bagian 4.3.
+| Di-require dari routes/web.php.
+| Dilindungi middleware 'auth' dan 'role:member'.
 */
 
-Route::middleware(['auth', 'verified', 'role:member'])
+Route::middleware(['auth', 'role:member'])
     ->prefix('member')
     ->name('member.')
     ->group(function () {
@@ -30,4 +26,8 @@ Route::middleware(['auth', 'verified', 'role:member'])
         Route::get('/loans', [LoanController::class, 'history'])->name('loans.history');
         Route::post('/loans/{book}', [LoanController::class, 'store'])->name('loans.store');
         Route::delete('/loans/{loan}', [LoanController::class, 'cancel'])->name('loans.cancel');
+        Route::post('/loans/{loan}/return', [LoanController::class, 'returnBook'])->name('loans.return');
+
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     });

@@ -48,35 +48,37 @@
 
             {{-- Nav Links --}}
             <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                <a href="{{ route('admin.dashboard') ?? '#' }}" class="{{ request()->routeIs('admin.dashboard') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.dashboard') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                     Dashboard
                 </a>
-                <a href="{{ route('admin.books') ?? '#' }}" class="{{ request()->routeIs('admin.books') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
-                    <svg class="w-5 h-5 {{ request()->routeIs('admin.books') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                <a href="{{ route('admin.books.index') }}" class="{{ request()->routeIs('admin.books.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                    <svg class="w-5 h-5 {{ request()->routeIs('admin.books.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     Katalog Buku
                 </a>
-                <a href="#" class="text-stone-600 hover:bg-stone-50 hover:text-stone-900 flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
-                    <svg class="w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                <a href="{{ route('admin.loans.index') }}" class="{{ request()->routeIs('admin.loans.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                    <svg class="w-5 h-5 {{ request()->routeIs('admin.loans.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                     Sirkulasi
                 </a>
-                <a href="#" class="text-stone-600 hover:bg-stone-50 hover:text-stone-900 flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
-                    <svg class="w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                    <svg class="w-5 h-5 {{ request()->routeIs('admin.users.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     Anggota
+                </a>
+                <a href="{{ route('admin.settings.index') }}" class="{{ request()->routeIs('admin.settings.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                    <svg class="w-5 h-5 {{ request()->routeIs('admin.settings.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Pengaturan
                 </a>
             </nav>
 
-            {{-- Logout / User --}}
+            {{-- Logout / User Profile --}}
             <div class="p-4 border-t border-stone-200">
-                <div class="flex items-center gap-3 px-3 py-2">
-                    <div class="w-9 h-9 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">
-                        AD
-                    </div>
+                <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-stone-50 transition-colors">
+                    <img src="{{ auth()->user()?->avatar_url }}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-stone-200 shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-stone-900 truncate">Administrator</p>
-                        <p class="text-xs text-stone-500 truncate">admin@libriq.id</p>
+                        <p class="text-sm font-semibold text-stone-900 truncate">{{ auth()->user()?->name }}</p>
+                        <p class="text-xs text-stone-500 truncate">{{ auth()->user()?->email }}</p>
                     </div>
-                </div>
+                </a>
                 <form method="POST" action="{{ route('logout') }}" class="mt-2">
                     @csrf
                     <button type="submit" class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg font-medium transition-colors">
@@ -94,18 +96,47 @@
                     <button @click="sidebarOpen = true" class="lg:hidden p-2 text-stone-500 hover:text-stone-900 rounded-lg focus:bg-stone-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
-                    <div class="hidden sm:block relative w-64 lg:w-96">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        </div>
-                        <input type="text" class="block w-full pl-10 pr-3 py-2 border border-stone-200 rounded-xl leading-5 bg-stone-50 placeholder-stone-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 sm:text-sm transition-colors" placeholder="Cari ISBN, Judul Buku, atau Peminjam...">
-                    </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button class="relative p-2 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                        <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-600 border-2 border-white rounded-full"></span>
-                    </button>
+                    @php
+                        $adminNotifs = \App\Models\Notification::where('user_id', auth()->id())->latest('created_at')->take(5)->get();
+                        $unreadAdminNotifsCount = \App\Models\Notification::where('user_id', auth()->id())->whereNull('read_at')->count();
+                    @endphp
+                    <div x-data="{ notifOpen: false }" class="relative">
+                        <button @click="notifOpen = !notifOpen" @click.away="notifOpen = false" class="relative p-2 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100 transition-colors focus:outline-none">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            @if($unreadAdminNotifsCount > 0)
+                                <span class="absolute top-1 right-1 px-1.5 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded-full border-2 border-white">
+                                    {{ $unreadAdminNotifsCount }}
+                                </span>
+                            @endif
+                        </button>
+
+                        {{-- Dropdown Notifications --}}
+                        <div x-show="notifOpen" x-cloak class="absolute right-0 mt-2 w-80 bg-white border border-stone-200 rounded-2xl shadow-xl py-2 z-50">
+                            <div class="px-4 py-2 border-b border-stone-100 flex justify-between items-center">
+                                <h4 class="font-bold text-sm text-stone-900">Notifikasi Admin</h4>
+                                <span class="text-xs text-orange-600 font-semibold">{{ $unreadAdminNotifsCount }} belum dibaca</span>
+                            </div>
+                            <div class="max-h-72 overflow-y-auto divide-y divide-stone-100 text-xs">
+                                @forelse($adminNotifs as $notif)
+                                    <div class="px-4 py-3 hover:bg-stone-50 transition-colors">
+                                        <p class="text-stone-800 font-medium leading-tight">{{ $notif->message }}</p>
+                                        <p class="text-stone-400 text-[10px] mt-1">{{ $notif->created_at ? $notif->created_at->diffForHumans() : 'Baru saja' }}</p>
+                                    </div>
+                                @empty
+                                    <div class="px-4 py-6 text-center text-stone-400">
+                                        Tidak ada notifikasi.
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Admin Profile Link / Avatar Topbar --}}
+                    <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-2 p-1 rounded-full hover:bg-stone-100 transition-colors" title="Edit Profil Admin">
+                        <img src="{{ auth()->user()?->avatar_url }}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-orange-500 shadow-sm">
+                    </a>
                 </div>
             </header>
 

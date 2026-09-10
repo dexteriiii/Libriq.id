@@ -61,6 +61,14 @@
                                         @method('DELETE')
                                         <button type="submit" class="text-xs font-medium text-stone-500 hover:text-red-600">Batalkan</button>
                                     </form>
+                                @elseif (in_array($loan->status, ['borrowed', 'overdue']))
+                                    <form method="POST" action="{{ route('member.loans.return', $loan) }}"
+                                          onsubmit="return confirm('Kembalikan buku ini sekarang?');">
+                                        @csrf
+                                        <button type="submit" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors">
+                                            Kembalikan Buku
+                                        </button>
+                                    </form>
                                 @endif
                             </td>
                         </tr>
