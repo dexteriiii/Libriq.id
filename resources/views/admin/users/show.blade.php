@@ -17,9 +17,7 @@
     {{-- User Summary Card --}}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-lg">
-                {{ strtoupper(substr($user->name, 0, 2)) }}
-            </div>
+            <img src="{{ $user->avatar_url }}" alt="Avatar {{ $user->name }}" class="w-14 h-14 rounded-full object-cover border-2 border-orange-200 shrink-0">
             <div>
                 <h3 class="font-bold text-stone-900">{{ $user->name }}</h3>
                 <p class="text-xs text-stone-500">{{ $user->email }}</p>

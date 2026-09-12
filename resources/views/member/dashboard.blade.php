@@ -1,7 +1,33 @@
 <x-layouts.member title="Beranda — Libriq.id">
-    <div class="mb-6">
-        <h1 class="font-heading text-2xl font-bold text-stone-900">Halo, {{ auth()->user()->name }} 👋</h1>
-        <p class="text-stone-500 text-sm mt-1">Berikut ringkasan aktivitas peminjamanmu.</p>
+    {{-- Member Profile & Welcome Banner --}}
+    <div class="mb-8 bg-white border border-stone-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+            <div class="relative shrink-0">
+                <img src="{{ auth()->user()->avatar_url }}" alt="Avatar {{ auth()->user()->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-orange-500 shadow-sm">
+                <span class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" title="Member Aktif"></span>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-heading text-xl sm:text-2xl font-bold text-stone-900">Halo, {{ auth()->user()->name }} 👋</h1>
+                    <span class="px-2.5 py-0.5 bg-orange-100 text-orange-800 text-xs font-semibold rounded-full">Anggota</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone-500 mt-1">
+                    <span class="font-mono bg-stone-100 px-2 py-0.5 rounded text-stone-600 font-medium">ID: {{ auth()->user()->member_id ?? 'Member' }}</span>
+                    <span>{{ auth()->user()->email }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+            <a href="{{ route('member.profile.edit') }}" class="px-4 py-2.5 bg-stone-50 border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 hover:text-stone-900 transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                Ubah Foto / Profil
+            </a>
+            <a href="{{ route('member.catalog.index') }}" class="px-4 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                Jelajahi Katalog
+            </a>
+        </div>
     </div>
 
     @if (session('success'))

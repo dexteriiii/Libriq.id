@@ -65,8 +65,13 @@
                     @forelse ($users as $u)
                         <tr class="hover:bg-stone-50/50 transition-colors">
                             <td class="px-6 py-4">
-                                <div class="font-bold text-stone-900">{{ $u->name }}</div>
-                                <div class="text-stone-500 text-xs">{{ $u->email }}</div>
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ $u->avatar_url }}" alt="Avatar {{ $u->name }}" class="w-9 h-9 rounded-full object-cover border border-stone-200 shrink-0">
+                                    <div class="min-w-0">
+                                        <div class="font-bold text-stone-900 truncate">{{ $u->name }}</div>
+                                        <div class="text-stone-500 text-xs truncate">{{ $u->email }}</div>
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $u->isAdmin() ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800' }}">

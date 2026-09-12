@@ -21,10 +21,55 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-xl border border-stone-200 p-6 sm:p-8 max-w-2xl">
-        <form method="POST" action="{{ route('member.profile.update') }}" class="space-y-6">
+    <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 sm:p-8 max-w-2xl">
+        <form method="POST" action="{{ route('member.profile.update') }}" enctype="multipart/form-data" 
+              x-data="{ 
+                  previewUrl: '{{ $user->avatar_url }}',
+                  removeAvatar: false,
+                  previewImage(event) {
+                      const file = event.target.files[0];
+                      if (file) {
+                          this.previewUrl = URL.createObjectURL(file);
+                          this.removeAvatar = false;
+                      }
+                  },
+                  resetAvatar() {
+                      this.removeAvatar = true;
+                      this.previewUrl = 'https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&color=ea580c&background=ffedd5';
+                      this.$refs.fileInput.value = '';
+                  }
+              }" 
+              class="space-y-6">
             @csrf
             @method('PUT')
+
+            {{-- Hidden remove avatar input --}}
+            <input type="hidden" name="remove_avatar" :value="removeAvatar ? '1' : '0'">
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 border-b border-stone-200 pb-6">
+                <div class="relative shrink-0">
+                    <img :src="previewUrl" alt="Avatar {{ $user->name }}" class="w-24 h-24 rounded-full object-cover border-4 border-orange-100 shadow-md">
+                    <span class="absolute bottom-0 right-0 w-6 h-6 bg-emerald-500 border-2 border-white rounded-full" title="Member Aktif"></span>
+                </div>
+                <div class="flex-1 space-y-2">
+                    <label class="block text-sm font-semibold text-stone-800">Foto Profil Anggota</label>
+                    <p class="text-xs text-stone-500">Format yang didukung: JPG, JPEG, PNG, atau WEBP. Ukuran file maksimal 2MB.</p>
+                    <div class="flex flex-wrap items-center gap-3 pt-1">
+                        <label class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-orange-50 text-orange-700 text-xs font-semibold rounded-xl hover:bg-orange-100 transition-colors border border-orange-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            Pilih Foto Baru
+                            <input type="file" name="avatar" x-ref="fileInput" @change="previewImage($event)" accept="image/png,image/jpeg,image/jpg,image/webp" class="hidden">
+                        </label>
+
+                        @if($user->avatar_path)
+                            <button type="button" @click="resetAvatar()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-stone-100 text-stone-600 text-xs font-medium rounded-xl hover:bg-red-50 hover:text-red-600 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                Hapus Foto
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            </div>
 
             <div>
                 <label class="block text-sm font-medium text-stone-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>

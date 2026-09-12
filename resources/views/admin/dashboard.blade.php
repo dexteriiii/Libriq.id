@@ -1,13 +1,28 @@
 <x-layouts.admin title="Dashboard Admin — Libriq.id">
-    {{-- Page Header --}}
-    <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold font-heading text-stone-900">Dashboard Statistik</h1>
-            <p class="text-stone-500 mt-1">Ringkasan aktivitas sirkulasi dan inventaris perpustakaan.</p>
+    {{-- Admin Profile & Welcome Banner --}}
+    <div class="mb-8 bg-white border border-stone-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+            <div class="relative shrink-0">
+                <img src="{{ auth()->user()?->avatar_url }}" alt="Avatar {{ auth()->user()?->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-orange-500 shadow-sm">
+                <span class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" title="Admin Aktif"></span>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl sm:text-2xl font-bold font-heading text-stone-900">Halo, {{ auth()->user()?->name }} 👋</h1>
+                    <span class="px-2.5 py-0.5 bg-orange-100 text-orange-800 text-xs font-semibold rounded-full">Administrator</span>
+                </div>
+                <p class="text-stone-500 text-sm mt-0.5">Ringkasan aktivitas sirkulasi dan inventaris perpustakaan Libriq.id hari ini.</p>
+            </div>
         </div>
-        <div class="flex gap-2">
-            <a href="{{ route('admin.books.create') }}" class="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors shadow-sm">
-                Tambah Buku Baru
+
+        <div class="flex items-center gap-3 shrink-0">
+            <a href="{{ route('admin.profile.edit') }}" class="px-4 py-2.5 bg-stone-50 border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 hover:text-stone-900 transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                Ubah Foto / Profil
+            </a>
+            <a href="{{ route('admin.books.create') }}" class="px-4 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Tambah Buku
             </a>
         </div>
     </div>
@@ -184,6 +199,19 @@
                     <div>
                         <p class="font-medium">Daftarkan Anggota Baru</p>
                         <p class="text-xs text-stone-500">Tambah member offline</p>
+                    </div>
+                </a>
+
+                <a href="{{ route('admin.reports.pdf') }}" target="_blank" class="w-full flex items-center gap-3 p-3 rounded-xl border border-red-200 bg-red-50/40 hover:border-red-500 hover:bg-red-50 hover:text-red-700 transition-all text-left group">
+                    <div class="p-2 bg-red-100 rounded-lg group-hover:bg-red-200 text-red-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <p class="font-medium text-stone-900 group-hover:text-red-700">Ekspor Laporan PDF</p>
+                         
+                        </div>
+                        
                     </div>
                 </a>
 

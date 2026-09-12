@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -65,4 +66,7 @@ Route::middleware(['auth', 'role:admin'])
         // ── Settings ──────────────────────────────────────────────────────
         Route::get('/settings',  [SettingController::class, 'index'])->name('settings.index');
         Route::put('/settings',  [SettingController::class, 'update'])->name('settings.update');
+
+        // ── Reports ───────────────────────────────────────────────────────
+        Route::get('/reports/pdf', [ReportController::class, 'exportPdf'])->name('reports.pdf');
     });

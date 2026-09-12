@@ -101,23 +101,36 @@
                     </button>
 
                     <div x-data="{ dropdownOpen: false }" class="relative">
-                        <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="flex items-center gap-2 p-1 rounded-full hover:bg-stone-100 transition-colors focus:outline-none">
-                            <div class="w-9 h-9 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">
-                                {{ strtoupper(substr(auth()->user()?->name ?? 'M', 0, 2)) }}
-                            </div>
+                        <button @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="flex items-center gap-2 p-1 rounded-full hover:bg-stone-100 transition-colors focus:outline-none" title="Menu Pengguna">
+                            <img src="{{ auth()->user()?->avatar_url }}" alt="Avatar {{ auth()->user()?->name }}" class="w-9 h-9 rounded-full object-cover border border-orange-500 shadow-sm">
                         </button>
                         
                         {{-- Dropdown --}}
-                        <div x-show="dropdownOpen" x-cloak class="absolute right-0 mt-2 w-56 bg-white border border-stone-200 rounded-xl shadow-lg py-1 z-50">
-                            <div class="px-4 py-3 border-b border-stone-100">
-                                <p class="text-sm font-semibold text-stone-900">{{ auth()->user()?->name }}</p>
-                                <p class="text-xs text-stone-500 truncate">{{ auth()->user()?->email }}</p>
-                                <p class="text-[10px] font-mono text-orange-600 mt-1">ID: {{ auth()->user()?->member_id ?? 'Member' }}</p>
+                        <div x-show="dropdownOpen" x-cloak class="absolute right-0 mt-2 w-60 bg-white border border-stone-200 rounded-2xl shadow-xl py-2 z-50">
+                            <div class="px-4 py-3 border-b border-stone-100 flex items-center gap-3">
+                                <img src="{{ auth()->user()?->avatar_url }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-orange-200 shrink-0">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-bold text-stone-900 truncate">{{ auth()->user()?->name }}</p>
+                                    <p class="text-xs text-stone-500 truncate">{{ auth()->user()?->email }}</p>
+                                    <p class="text-[10px] font-mono text-orange-600 font-semibold mt-0.5">ID: {{ auth()->user()?->member_id ?? 'Member' }}</p>
+                                </div>
                             </div>
-                            <a href="{{ route('member.profile.edit') }}" class="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 font-medium">Edit Profil Saya</a>
-                            <form method="POST" action="{{ route('logout') }}" class="border-t border-stone-100">
+                            <div class="py-1">
+                                <a href="{{ route('member.profile.edit') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 font-medium transition-colors">
+                                    <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    Edit Profil Saya
+                                </a>
+                                <a href="{{ route('member.loans.history') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 font-medium transition-colors">
+                                    <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                    Peminjaman Saya
+                                </a>
+                            </div>
+                            <form method="POST" action="{{ route('logout') }}" class="border-t border-stone-100 pt-1">
                                 @csrf
-                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium">Logout</button>
+                                <button type="submit" class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium transition-colors">
+                                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    Logout
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -127,10 +140,17 @@
 
         {{-- Mobile Navigation Dropdown --}}
         <div x-show="mobileMenuOpen" x-cloak class="md:hidden border-t border-stone-200 bg-white px-4 py-3 space-y-2">
+            <div class="flex items-center gap-3 pb-3 border-b border-stone-100">
+                <img src="{{ auth()->user()?->avatar_url }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-orange-200">
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-bold text-stone-900 truncate">{{ auth()->user()?->name }}</p>
+                    <p class="text-xs text-stone-500 truncate">{{ auth()->user()?->email }}</p>
+                </div>
+            </div>
             <a href="{{ route('member.dashboard') }}" class="block px-3 py-2 rounded-lg font-medium text-stone-700 hover:bg-stone-50">Beranda</a>
             <a href="{{ route('member.catalog.index') }}" class="block px-3 py-2 rounded-lg font-medium text-stone-700 hover:bg-stone-50">Eksplorasi Katalog</a>
             <a href="{{ route('member.loans.history') }}" class="block px-3 py-2 rounded-lg font-medium text-stone-700 hover:bg-stone-50">Peminjaman Saya</a>
-            <a href="{{ route('member.profile.edit') }}" class="block px-3 py-2 rounded-lg font-medium text-stone-700 hover:bg-stone-50">Edit Profil</a>
+            <a href="{{ route('member.profile.edit') }}" class="block px-3 py-2 rounded-lg font-medium text-stone-700 hover:bg-stone-50">Edit Profil Saya</a>
         </div>
     </header>
 
