@@ -104,6 +104,8 @@
                                         <span class="px-2.5 py-1 bg-stone-100 text-stone-500 text-xs font-medium rounded-lg" title="Ada antrean reservasi dari anggota lain">
                                             Ada Antrean
                                         </span>
+
+                                        
                                     @elseif ($loan->isOverdue())
                                         {{-- Overdue: harus dikembalikan --}}
                                     @else
