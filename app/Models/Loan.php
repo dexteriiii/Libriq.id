@@ -14,6 +14,7 @@ class Loan extends Model
     protected $fillable = [
         'borrower_id', 'book_id', 'borrow_date', 'due_date',
         'return_date', 'status', 'fine_amount', 'fine_paid_at',
+        'renewal_status', 'renewal_count', 'renewal_requested_at',
     ];
 
     protected $casts = [
@@ -21,6 +22,7 @@ class Loan extends Model
         'due_date' => 'date',
         'return_date' => 'date',
         'fine_paid_at' => 'datetime',
+        'renewal_requested_at' => 'datetime',
     ];
 
     public function borrower(): BelongsTo
@@ -49,9 +51,31 @@ class Loan extends Model
         return Carbon::today()->diffInDays($this->due_date);
     }
 
+    /** Cek apakah ada anggota lain yang sedang antre/reservasi buku ini */
+    public function hasPendingReservation(): bool
+    {
+        return self::where('book_id', $this->book_id)
+            ->where('borrower_id', '!=', $this->borrower_id)
+            ->where('status', 'pending')
+            ->exists();
+    }
+
+    /** Cek apakah pinjaman ini memenuhi syarat perpanjangan */
+    public function canBeRenewed(): bool
+    {
+        return $this->status === 'borrowed'
+            && ! $this->isOverdue()
+            && $this->renewal_status !== 'pending'
+            && ! $this->hasPendingReservation();
+    }
+
     /** Label & warna badge status, mengikuti semantic color PRD */
     public function statusBadge(): array
     {
+        if ($this->status === 'borrowed' && $this->renewal_status === 'pending') {
+            return ['label' => 'Dipinjam (Perpanjangan Diajukan)', 'color' => 'blue'];
+        }
+
         return match ($this->status) {
             'pending'  => ['label' => 'Menunggu Persetujuan', 'color' => 'amber'],
             'borrowed' => ['label' => 'Dipinjam', 'color' => 'emerald'],

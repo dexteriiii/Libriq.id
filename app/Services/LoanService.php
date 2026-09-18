@@ -167,4 +167,62 @@ class LoanService
 
         return $daysLate * $finePerDay;
     }
+
+    // -------------------------------------------------------------------------
+    // Renewal (Perpanjangan Peminjaman)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Setujui perpanjangan peminjaman.
+     * - Tambah due_date sesuai setting loan_duration_days
+     * - Set renewal_status = approved & increment renewal_count
+     */
+    public function approveRenewal(Loan $loan): Carbon
+    {
+        abort_if($loan->status !== 'borrowed', 422, 'Hanya peminjaman aktif yang bisa diperpanjang.');
+        abort_if($loan->renewal_status !== 'pending', 422, 'Tidak ada pengajuan perpanjangan yang pending.');
+
+        $loanDays = (int) Setting::get('loan_duration_days', 7);
+        $baseDate = ($loan->due_date && $loan->due_date->isFuture()) ? $loan->due_date : Carbon::today();
+        $newDueDate = $baseDate->copy()->addDays($loanDays);
+
+        $loan->update([
+            'due_date'        => $newDueDate,
+            'renewal_status'  => 'approved',
+            'renewal_count'   => $loan->renewal_count + 1,
+        ]);
+
+        // Notifikasi ke borrower
+        Notification::create([
+            'user_id'    => $loan->borrower_id,
+            'type'       => 'loan_renewed',
+            'message'    => "Perpanjangan peminjaman buku \"{$loan->book->title}\" disetujui! Batas pengembalian baru: {$newDueDate->translatedFormat('d F Y')}.",
+            'created_at' => now(),
+        ]);
+
+        return $newDueDate;
+    }
+
+    /**
+     * Tolak perpanjangan peminjaman.
+     */
+    public function rejectRenewal(Loan $loan, ?string $reason = null): void
+    {
+        abort_if($loan->renewal_status !== 'pending', 422, 'Tidak ada pengajuan perpanjangan yang pending.');
+
+        $loan->update(['renewal_status' => 'rejected']);
+
+        $message = "Permintaan perpanjangan peminjaman buku \"{$loan->book->title}\" ditolak.";
+        if ($reason) {
+            $message .= " Alasan: {$reason}";
+        }
+
+        Notification::create([
+            'user_id'    => $loan->borrower_id,
+            'type'       => 'renewal_rejected',
+            'message'    => $message,
+            'created_at' => now(),
+        ]);
+    }
 }
+

@@ -111,6 +111,27 @@
                     </form>
                 @endif
 
+                @if($loan->status === 'borrowed' && $loan->renewal_status === 'pending')
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
+                        <p class="font-bold">Pengajuan Perpanjangan Aktif</p>
+                        <p class="mt-0.5">Member mengajukan perpanjangan masa pinjam (+7 hari).</p>
+                    </div>
+
+                    <form method="POST" action="{{ route('admin.loans.renew-approve', $loan) }}">
+                        @csrf
+                        <button type="submit" class="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-xl text-sm hover:bg-blue-700 transition-colors shadow-sm">
+                            Setujui Perpanjangan (+7 Hari)
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ route('admin.loans.renew-reject', $loan) }}">
+                        @csrf
+                        <button type="submit" class="w-full py-2.5 bg-red-100 text-red-700 font-semibold rounded-xl text-sm hover:bg-red-200 transition-colors">
+                            Tolak Perpanjangan
+                        </button>
+                    </form>
+                @endif
+
                 @if(in_array($loan->status, ['borrowed', 'overdue']))
                     <form method="POST" action="{{ route('admin.loans.return', $loan) }}">
                         @csrf

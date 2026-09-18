@@ -202,6 +202,19 @@
                     </div>
                 </a>
 
+                <a href="{{ route('admin.insights.index') }}" class="w-full flex items-center gap-3 p-3 rounded-xl border border-indigo-200 bg-indigo-50/40 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition-all text-left group">
+                    <div class="p-2 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 text-indigo-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <p class="font-medium text-stone-900 group-hover:text-indigo-700">Insight & Analitik</p>
+                            <span class="px-1.5 py-0.5 bg-indigo-600 text-white text-[10px] font-bold rounded">Baru</span>
+                        </div>
+                        <p class="text-xs text-stone-500 group-hover:text-indigo-600/80">Grafik tren & buku populer</p>
+                    </div>
+                </a>
+
                 <a href="{{ route('admin.reports.pdf') }}" target="_blank" class="w-full flex items-center gap-3 p-3 rounded-xl border border-red-200 bg-red-50/40 hover:border-red-500 hover:bg-red-50 hover:text-red-700 transition-all text-left group">
                     <div class="p-2 bg-red-100 rounded-lg group-hover:bg-red-200 text-red-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -209,9 +222,8 @@
                     <div>
                         <div class="flex items-center gap-1.5">
                             <p class="font-medium text-stone-900 group-hover:text-red-700">Ekspor Laporan PDF</p>
-                         
                         </div>
-                        
+                        <p class="text-xs text-stone-500 group-hover:text-red-600/80">Format resmi SMKN 5 Surakarta</p>
                     </div>
                 </a>
 

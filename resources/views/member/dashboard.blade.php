@@ -89,10 +89,34 @@
                                     <p class="text-xs text-stone-400 mt-0.5">Jatuh tempo: {{ $loan->due_date->format('d M Y') }}</p>
                                 @endif
                             </div>
-                            <span class="text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap
-                                bg-{{ $badge['color'] }}-50 text-{{ $badge['color'] }}-700">
-                                {{ $badge['label'] }}
-                            </span>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <span class="text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap
+                                    bg-{{ $badge['color'] }}-50 text-{{ $badge['color'] }}-700">
+                                    {{ $badge['label'] }}
+                                </span>
+
+                                @if ($loan->status === 'borrowed')
+                                    @if ($loan->renewal_status === 'pending')
+                                        <span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg border border-blue-200">
+                                            Menunggu Approval Admin
+                                        </span>
+                                    @elseif ($loan->hasPendingReservation())
+                                        <span class="px-2.5 py-1 bg-stone-100 text-stone-500 text-xs font-medium rounded-lg" title="Ada antrean reservasi dari anggota lain">
+                                            Ada Antrean
+                                        </span>
+                                    @elseif ($loan->isOverdue())
+                                        {{-- Overdue: harus dikembalikan --}}
+                                    @else
+                                        <form method="POST" action="{{ route('member.loans.renew', $loan) }}"
+                                              onsubmit="return confirm('Ajukan perpanjangan masa peminjaman untuk buku ini?');">
+                                            @csrf
+                                            <button type="submit" class="px-3 py-1 bg-orange-600 text-white rounded-lg text-xs font-semibold hover:bg-orange-700 transition-colors shadow-sm">
+                                                Perpanjang
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endif
+                            </div>
                         </li>
                     @endforeach
                 </ul>

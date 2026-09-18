@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\InsightController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ReportController;
@@ -46,10 +47,12 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('/',                    [LoanController::class, 'index'])->name('index');
             Route::get('/pending',             [LoanController::class, 'pending'])->name('pending');
             Route::get('/{loan}',              [LoanController::class, 'show'])->name('show');
-            Route::post('/{loan}/approve',     [LoanController::class, 'approve'])->name('approve');
-            Route::post('/{loan}/reject',      [LoanController::class, 'reject'])->name('reject');
-            Route::post('/{loan}/return',      [LoanController::class, 'processReturn'])->name('return');
-            Route::post('/{loan}/pay-fine',    [LoanController::class, 'markFinePaid'])->name('pay-fine');
+            Route::post('/{loan}/approve',       [LoanController::class, 'approve'])->name('approve');
+            Route::post('/{loan}/reject',        [LoanController::class, 'reject'])->name('reject');
+            Route::post('/{loan}/renew-approve', [LoanController::class, 'approveRenewal'])->name('renew-approve');
+            Route::post('/{loan}/renew-reject',  [LoanController::class, 'rejectRenewal'])->name('renew-reject');
+            Route::post('/{loan}/return',        [LoanController::class, 'processReturn'])->name('return');
+            Route::post('/{loan}/pay-fine',      [LoanController::class, 'markFinePaid'])->name('pay-fine');
         });
 
         // ── Users / Members ───────────────────────────────────────────────
@@ -67,6 +70,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/settings',  [SettingController::class, 'index'])->name('settings.index');
         Route::put('/settings',  [SettingController::class, 'update'])->name('settings.update');
 
-        // ── Reports ───────────────────────────────────────────────────────
+        // ── Reports & Insights ───────────────────────────────────────────
+        Route::get('/insights',    [InsightController::class, 'index'])->name('insights.index');
         Route::get('/reports/pdf', [ReportController::class, 'exportPdf'])->name('reports.pdf');
     });

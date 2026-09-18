@@ -27,6 +27,7 @@ Route::middleware(['auth', 'role:member'])
         Route::post('/loans/{book}', [LoanController::class, 'store'])->name('loans.store');
         Route::delete('/loans/{loan}', [LoanController::class, 'cancel'])->name('loans.cancel');
         Route::post('/loans/{loan}/return', [LoanController::class, 'returnBook'])->name('loans.return');
+        Route::post('/loans/{loan}/renew', [LoanController::class, 'renew'])->name('loans.renew');
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');

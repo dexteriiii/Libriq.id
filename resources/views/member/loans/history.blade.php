@@ -54,22 +54,50 @@
                                 {{ $loan->fine_amount > 0 ? 'Rp' . number_format($loan->fine_amount, 0, ',', '.') : '—' }}
                             </td>
                             <td class="px-5 py-4 text-right">
-                                @if ($loan->status === 'pending')
-                                    <form method="POST" action="{{ route('member.loans.cancel', $loan) }}"
-                                          onsubmit="return confirm('Batalkan permintaan peminjaman ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-xs font-medium text-stone-500 hover:text-red-600">Batalkan</button>
-                                    </form>
-                                @elseif (in_array($loan->status, ['borrowed', 'overdue']))
-                                    <form method="POST" action="{{ route('member.loans.return', $loan) }}"
-                                          onsubmit="return confirm('Kembalikan buku ini sekarang?');">
-                                        @csrf
-                                        <button type="submit" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors">
-                                            Kembalikan Buku
-                                        </button>
-                                    </form>
-                                @endif
+                                <div class="flex items-center justify-end gap-2">
+                                    @if ($loan->status === 'pending')
+                                        <form method="POST" action="{{ route('member.loans.cancel', $loan) }}"
+                                              onsubmit="return confirm('Batalkan permintaan peminjaman ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-xs font-medium text-stone-500 hover:text-red-600">Batalkan</button>
+                                        </form>
+                                    @elseif ($loan->status === 'borrowed')
+                                        @if ($loan->renewal_status === 'pending')
+                                            <span class="text-xs text-blue-600 font-medium px-2 py-0.5 bg-blue-50 rounded-md border border-blue-200">
+                                                Perpanjangan Menunggu Persetujuan
+                                            </span>
+                                        @elseif ($loan->hasPendingReservation())
+                                            <span class="text-xs text-stone-400 bg-stone-100 px-2 py-0.5 rounded" title="Ada antrean reservasi dari anggota lain">
+                                                Ada Antrean
+                                            </span>
+                                        @elseif (! $loan->isOverdue())
+                                            <form method="POST" action="{{ route('member.loans.renew', $loan) }}"
+                                                  onsubmit="return confirm('Ajukan perpanjangan masa peminjaman untuk buku ini?');">
+                                                @csrf
+                                                <button type="submit" class="px-2.5 py-1 bg-orange-50 text-orange-600 border border-orange-200 rounded-lg text-xs font-semibold hover:bg-orange-600 hover:text-white transition-colors">
+                                                    Perpanjang
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        <form method="POST" action="{{ route('member.loans.return', $loan) }}"
+                                              onsubmit="return confirm('Kembalikan buku ini sekarang?');">
+                                            @csrf
+                                            <button type="submit" class="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors">
+                                                Kembalikan
+                                            </button>
+                                        </form>
+                                    @elseif ($loan->status === 'overdue')
+                                        <form method="POST" action="{{ route('member.loans.return', $loan) }}"
+                                              onsubmit="return confirm('Kembalikan buku ini sekarang?');">
+                                            @csrf
+                                            <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-semibold hover:bg-red-700 transition-colors">
+                                                Kembalikan
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach

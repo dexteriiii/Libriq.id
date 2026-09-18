@@ -2,39 +2,21 @@
 
 namespace Database\Seeders;
 
-use App\Models\Book;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
+     *
+     * Urutan: User → Book → Loan (karena Loan bergantung pada User & Book)
      */
     public function run(): void
     {
-        // Create admin user
-        User::updateOrCreate(
-            ['email' => 'admin@libriq.id'],
-            [
-                'name'     => 'Administrator',
-                'password' => Hash::make('password'),
-                'role'     => 'admin',
-            ]
-        );
-
-        // Create test member
-        User::updateOrCreate(
-            ['email' => 'member@libriq.id'],
-            [
-                'name'     => 'Anggota Demo',
-                'password' => Hash::make('password'),
-                'role'     => 'member',
-            ]
-        );
-
-        // Seed books
-        $this->call(BookSeeder::class);
+        $this->call([
+            UserSeeder::class,
+            BookSeeder::class,
+            LoanSeeder::class,
+        ]);
     }
 }

@@ -121,6 +121,15 @@
                                         Detail
                                     </a>
 
+                                    @if($loan->status === 'borrowed' && $loan->renewal_status === 'pending')
+                                        <form method="POST" action="{{ route('admin.loans.renew-approve', $loan) }}" onsubmit="return confirm('Setujui perpanjangan peminjaman ini?')">
+                                            @csrf
+                                            <button type="submit" class="px-2.5 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors">
+                                                Setujui Perpanjang
+                                            </button>
+                                        </form>
+                                    @endif
+
                                     @if(in_array($loan->status, ['borrowed', 'overdue']))
                                         <form method="POST" action="{{ route('admin.loans.return', $loan) }}" onsubmit="return confirm('Proses pengembalian buku ini?')">
                                             @csrf

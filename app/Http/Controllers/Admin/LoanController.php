@@ -36,7 +36,7 @@ class LoanController extends Controller
         return view('admin.loans.index', compact('loans'));
     }
 
-    // ─── Pending antrean ──────────────────────────────────────────────────────
+    // ─── Pending antrean & renewals ───────────────────────────────────────────
 
     public function pending()
     {
@@ -45,7 +45,13 @@ class LoanController extends Controller
             ->oldest()
             ->paginate(20);
 
-        return view('admin.loans.pending', compact('loans'));
+        $renewals = Loan::with(['borrower', 'book'])
+            ->where('status', 'borrowed')
+            ->where('renewal_status', 'pending')
+            ->latest('renewal_requested_at')
+            ->get();
+
+        return view('admin.loans.pending', compact('loans', 'renewals'));
     }
 
     // ─── Approve ─────────────────────────────────────────────────────────────
@@ -66,6 +72,26 @@ class LoanController extends Controller
         $this->loanService->rejectLoan($loan, $request->input('reason'));
 
         return back()->with('success', "Peminjaman #{$loan->id} ditolak.");
+    }
+
+    // ─── Renewal Approve ──────────────────────────────────────────────────────
+
+    public function approveRenewal(Loan $loan): RedirectResponse
+    {
+        $newDueDate = $this->loanService->approveRenewal($loan);
+
+        return back()->with('success', "Perpanjangan peminjaman #{$loan->id} disetujui hingga {$newDueDate->translatedFormat('d F Y')}.");
+    }
+
+    // ─── Renewal Reject ───────────────────────────────────────────────────────
+
+    public function rejectRenewal(Request $request, Loan $loan): RedirectResponse
+    {
+        $request->validate(['reason' => ['nullable', 'string', 'max:255']]);
+
+        $this->loanService->rejectRenewal($loan, $request->input('reason'));
+
+        return back()->with('success', "Pengajuan perpanjangan peminjaman #{$loan->id} ditolak.");
     }
 
     // ─── Process Return ───────────────────────────────────────────────────────

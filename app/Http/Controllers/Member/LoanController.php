@@ -125,4 +125,46 @@ class LoanController extends Controller
 
         return back()->with('success', $msg);
     }
+
+    /** Member mengajukan perpanjangan peminjaman buku */
+    public function renew(Loan $loan): RedirectResponse
+    {
+        abort_unless($loan->borrower_id === Auth::id(), 403);
+
+        if ($loan->status !== 'borrowed') {
+            return back()->with('error', 'Hanya buku yang sedang aktif dipinjam yang dapat diperpanjang.');
+        }
+
+        if ($loan->isOverdue()) {
+            return back()->with('error', 'Buku sudah melewati batas jatuh tempo (terlambat) dan tidak dapat diperpanjang. Silakan lakukan pengembalian.');
+        }
+
+        if ($loan->hasPendingReservation()) {
+            return back()->with('error', 'Buku tidak dapat diperpanjang karena sedang ada antrean reservasi dari anggota lain.');
+        }
+
+        if ($loan->renewal_status === 'pending') {
+            return back()->with('error', 'Pengajuan perpanjangan buku ini sudah dikirim dan sedang menunggu persetujuan admin.');
+        }
+
+        $user = Auth::user();
+
+        $loan->update([
+            'renewal_status'       => 'pending',
+            'renewal_requested_at' => now(),
+        ]);
+
+        // Notifikasi ke semua admin
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            Notification::create([
+                'user_id'    => $admin->id,
+                'type'       => 'renewal_requested',
+                'message'    => "Pengajuan Perpanjangan: {$user->name} mengajukan perpanjangan buku \"{$loan->book->title}\".",
+                'created_at' => now(),
+            ]);
+        }
+
+        return back()->with('success', 'Permintaan perpanjangan buku berhasil diajukan. Menunggu persetujuan admin.');
+    }
 }
