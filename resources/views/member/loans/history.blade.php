@@ -62,8 +62,22 @@
                                         {{ $badge['label'] }}
                                     </span>
                                 </td>
-                                <td class="px-5 py-4 tabular-nums {{ $loan->fine_amount > 0 ? 'text-red-600 font-semibold' : 'text-stone-400' }}">
-                                    {{ $loan->fine_amount > 0 ? 'Rp' . number_format($loan->fine_amount, 0, ',', '.') : '—' }}
+                                <td class="px-5 py-4 tabular-nums">
+                                    @php
+                                        $currentFine = $loan->calculateCurrentFine();
+                                    @endphp
+                                    @if($currentFine > 0)
+                                        <span class="text-red-600 font-bold">Rp {{ number_format($currentFine, 0, ',', '.') }}</span>
+                                        @if($loan->fine_paid_at)
+                                            <div class="text-emerald-600 text-[11px] font-medium">Lunas ({{ $loan->fine_paid_at->format('d M') }})</div>
+                                        @elseif($loan->status === 'returned')
+                                            <div class="text-red-500 text-[11px] font-medium">Belum Dibayar</div>
+                                        @else
+                                            <div class="text-amber-600 text-[11px] font-medium">Berjalan ({{ $loan->daysOverdue() }} hr)</div>
+                                        @endif
+                                    @else
+                                        <span class="text-stone-400">Rp 0</span>
+                                    @endif
                                 </td>
                                 <td class="px-5 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
@@ -74,40 +88,70 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="text-xs font-medium text-stone-500 hover:text-red-600 transition-colors">Batalkan</button>
                                             </form>
-                                        @elseif ($loan->status === 'borrowed')
-                                            @if ($loan->renewal_status === 'pending')
-                                                <span class="text-xs text-blue-600 font-semibold px-2.5 py-1 bg-blue-50 rounded-full border border-blue-200">
-                                                    Perpanjangan Menunggu Persetujuan
+                                        @elseif (in_array($loan->status, ['borrowed', 'overdue']))
+                                            @if ($loan->return_status === 'pending')
+                                                <span class="text-xs text-amber-700 font-semibold px-2.5 py-1 bg-amber-50 rounded-full border border-amber-200">
+                                                    Pengembalian Menunggu Konfirmasi
                                                 </span>
-                                            @elseif ($loan->hasPendingReservation())
-                                                <span class="text-xs text-stone-400 bg-stone-100 px-2.5 py-1 rounded-full" title="Ada antrean reservasi dari anggota lain">
-                                                    Ada Antrean
-                                                </span>
-                                            @elseif (! $loan->isOverdue())
-                                                <form method="POST" action="{{ route('member.loans.renew', $loan) }}"
-                                                      onsubmit="return confirm('Ajukan perpanjangan masa peminjaman untuk buku ini?');">
+                                            @else
+                                                <form method="POST" action="{{ route('member.loans.return', $loan) }}"
+                                                      onsubmit="return confirm('Ajukan pengembalian buku ini? Silakan serahkan buku fisik ke petugas perpustakaan.');">
                                                     @csrf
-                                                    <button type="submit" class="px-3 py-1.5 bg-orange-50 text-orange-600 border border-orange-200 rounded-lg text-xs font-semibold hover:bg-orange-600 hover:text-white transition-colors shadow-sm">
-                                                        Perpanjang
+                                                    <button type="submit" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors shadow-sm">
+                                                        Kembalikan
                                                     </button>
                                                 </form>
                                             @endif
 
-                                            <form method="POST" action="{{ route('member.loans.return', $loan) }}"
-                                                  onsubmit="return confirm('Kembalikan buku ini sekarang?');">
-                                                @csrf
-                                                <button type="submit" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors shadow-sm">
-                                                    Kembalikan
-                                                </button>
-                                            </form>
-                                        @elseif ($loan->status === 'overdue')
-                                            <form method="POST" action="{{ route('member.loans.return', $loan) }}"
-                                                  onsubmit="return confirm('Kembalikan buku ini sekarang?');">
-                                                @csrf
-                                                <button type="submit" class="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-semibold hover:bg-red-700 transition-colors shadow-sm">
-                                                    Kembalikan
-                                                </button>
-                                            </form>
+                                            @if ($currentFine > 0 && ! $loan->fine_paid_at)
+                                                @if ($loan->fine_payment_status === 'pending')
+                                                    <span class="text-xs text-blue-700 font-semibold px-2.5 py-1 bg-blue-50 rounded-full border border-blue-200">
+                                                        Verifikasi Denda Diajukan
+                                                    </span>
+                                                @else
+                                                    <form method="POST" action="{{ route('member.loans.pay-fine', $loan) }}"
+                                                          onsubmit="return confirm('Konfirmasi bahwa kamu sudah membayar denda cash sebesar Rp {{ number_format($currentFine, 0, ',', '.') }} ke admin?');">
+                                                        @csrf
+                                                        <button type="submit" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition-colors shadow-sm">
+                                                            Bayar Cash
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endif
+
+                                            @if (! $loan->isOverdue() && $loan->status === 'borrowed' && $loan->return_status !== 'pending')
+                                                @if ($loan->renewal_status === 'pending')
+                                                    <span class="text-xs text-blue-600 font-semibold px-2.5 py-1 bg-blue-50 rounded-full border border-blue-200">
+                                                        Perpanjangan Diajukan
+                                                    </span>
+                                                @elseif ($loan->hasPendingReservation())
+                                                    <span class="text-xs text-stone-400 bg-stone-100 px-2.5 py-1 rounded-full" title="Ada antrean reservasi dari anggota lain">
+                                                        Ada Antrean
+                                                    </span>
+                                                @else
+                                                    <form method="POST" action="{{ route('member.loans.renew', $loan) }}"
+                                                          onsubmit="return confirm('Ajukan perpanjangan masa peminjaman untuk buku ini?');">
+                                                        @csrf
+                                                        <button type="submit" class="px-3 py-1.5 bg-orange-50 text-orange-600 border border-orange-200 rounded-lg text-xs font-semibold hover:bg-orange-600 hover:text-white transition-colors shadow-sm">
+                                                            Perpanjang
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endif
+                                        @elseif ($loan->status === 'returned' && $loan->fine_amount > 0 && ! $loan->fine_paid_at)
+                                            @if ($loan->fine_payment_status === 'pending')
+                                                <span class="text-xs text-blue-700 font-semibold px-2.5 py-1 bg-blue-50 rounded-full border border-blue-200">
+                                                    Verifikasi Denda Diajukan
+                                                </span>
+                                            @else
+                                                <form method="POST" action="{{ route('member.loans.pay-fine', $loan) }}"
+                                                      onsubmit="return confirm('Konfirmasi bahwa kamu sudah membayar denda cash sebesar Rp {{ number_format($loan->fine_amount, 0, ',', '.') }} ke admin?');">
+                                                    @csrf
+                                                    <button type="submit" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition-colors shadow-sm">
+                                                        Konfirmasi Bayar Cash
+                                                    </button>
+                                                </form>
+                                            @endif
                                         @endif
                                     </div>
                                 </td>

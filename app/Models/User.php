@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -53,9 +54,88 @@ class User extends Authenticatable
         return $this->loans()->whereIn('status', ['pending', 'borrowed', 'overdue']);
     }
 
+    public function hasOverdueLoans(): bool
+    {
+        return $this->loans()
+            ->whereIn('status', ['borrowed', 'overdue'])
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', Carbon::today())
+            ->exists();
+    }
+
+    public function overdueLoansCount(): int
+    {
+        return $this->loans()
+            ->whereIn('status', ['borrowed', 'overdue'])
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', Carbon::today())
+            ->count();
+    }
+
     public function unpaidFines(): int
     {
-        return (int) $this->loans()->whereNull('fine_paid_at')->sum('fine_amount');
+        return $this->totalUnpaidFines();
+    }
+
+    public function totalUnpaidFines(): int
+    {
+        // 1. Denda dari buku yang sudah dikembalikan tapi belum dibayar
+        $returnedFines = (int) $this->loans()
+            ->where('status', 'returned')
+            ->whereNull('fine_paid_at')
+            ->where('fine_amount', '>', 0)
+            ->sum('fine_amount');
+
+        // 2. Denda berjalan dari buku aktif yang sedang terlambat
+        $finePerDay = (int) Setting::get('fine_per_day', 2000);
+        $today = Carbon::today();
+        $runningFines = 0;
+
+        $overdueLoans = $this->loans()
+            ->whereIn('status', ['borrowed', 'overdue'])
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', $today)
+            ->get();
+
+        foreach ($overdueLoans as $loan) {
+            $daysLate = (int) abs($today->diffInDays($loan->due_date));
+            $runningFines += ($daysLate * $finePerDay);
+        }
+
+        return $returnedFines + $runningFines;
+    }
+
+    public function canBorrowBooks(): bool
+    {
+        if ($this->hasOverdueLoans()) {
+            return false;
+        }
+
+        if ($this->totalUnpaidFines() > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getBorrowBlockReason(): ?string
+    {
+        $hasOverdue = $this->hasOverdueLoans();
+        $unpaidFine = $this->totalUnpaidFines();
+
+        if ($hasOverdue && $unpaidFine > 0) {
+            return 'Kamu memiliki buku yang terlambat dikembalikan dan denda belum lunas sebesar Rp' . number_format($unpaidFine, 0, ',', '.') . '. Harap kembalikan buku dan lunasi denda ke admin sebelum meminjam buku baru.';
+        }
+
+        if ($hasOverdue) {
+            return 'Kamu memiliki buku yang melewati batas jatuh tempo (terlambat). Harap kembalikan buku ke perpustakaan sebelum meminjam buku baru.';
+        }
+
+        if ($unpaidFine > 0) {
+            return 'Kamu memiliki denda belum lunas sebesar Rp' . number_format($unpaidFine, 0, ',', '.') . '. Harap lunasi denda ke admin sebelum meminjam buku baru.';
+        }
+
+        return null;
     }
 
     public function isMember(): bool

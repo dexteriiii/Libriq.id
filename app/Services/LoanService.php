@@ -80,13 +80,64 @@ class LoanService
     }
 
     // -------------------------------------------------------------------------
-    // Process Return (Borrowed / Overdue → Returned)
+    // Return Request & Approval (Borrowed / Overdue → Returned)
     // -------------------------------------------------------------------------
 
     /**
-     * Proses pengembalian buku.
+     * Member mengajukan pengembalian buku (menunggu konfirmasi admin).
+     */
+    public function requestReturn(Loan $loan): void
+    {
+        abort_if(
+            ! in_array($loan->status, ['borrowed', 'overdue']),
+            422,
+            'Hanya peminjaman aktif yang dapat diajukan pengembaliannya.'
+        );
+        abort_if(
+            $loan->return_status === 'pending',
+            422,
+            'Pengajuan pengembalian buku ini sudah dikirim dan sedang menunggu konfirmasi admin.'
+        );
+
+        $loan->update([
+            'return_status'       => 'pending',
+            'return_requested_at' => now(),
+        ]);
+
+        Notification::create([
+            'user_id'    => $loan->borrower_id,
+            'type'       => 'return_requested',
+            'message'    => "Pengajuan pengembalian buku \"{$loan->book->title}\" telah dikirim. Silakan serahkan buku fisik ke petugas perpustakaan untuk dikonfirmasi.",
+            'created_at' => now(),
+        ]);
+    }
+
+    /**
+     * Admin menolak pengajuan pengembalian buku (misal: buku belum diterima fisik / rusak).
+     */
+    public function rejectReturn(Loan $loan, ?string $reason = null): void
+    {
+        abort_if($loan->return_status !== 'pending', 422, 'Tidak ada pengajuan pengembalian yang pending.');
+
+        $loan->update(['return_status' => 'rejected']);
+
+        $msg = "Pengajuan pengembalian buku \"{$loan->book->title}\" ditolak oleh Admin.";
+        if ($reason) {
+            $msg .= " Alasan: {$reason}";
+        }
+
+        Notification::create([
+            'user_id'    => $loan->borrower_id,
+            'type'       => 'return_rejected',
+            'message'    => $msg,
+            'created_at' => now(),
+        ]);
+    }
+
+    /**
+     * Admin menyetujui/memproses pengembalian buku.
      * - Hitung denda final (dikunci di sini)
-     * - Set status = returned, return_date = today
+     * - Set status = returned, return_date = today, return_status = approved
      * - Tambah available_stock
      */
     public function processReturn(Loan $loan): int
@@ -105,17 +156,18 @@ class LoanService
             $finalFine = $this->calculateFine($loan);
 
             $loan->update([
-                'status'      => 'returned',
-                'return_date' => Carbon::today(),
-                'fine_amount' => $finalFine,
+                'status'        => 'returned',
+                'return_status' => 'approved',
+                'return_date'   => Carbon::today(),
+                'fine_amount'   => $finalFine,
             ]);
 
             $book->increment('available_stock');
 
             // Notifikasi ke borrower
-            $msg = "Pengembalian buku \"{$book->title}\" telah dicatat.";
+            $msg = "Pengembalian buku \"{$book->title}\" telah dikonfirmasi oleh Admin.";
             if ($finalFine > 0) {
-                $msg .= ' Denda: Rp' . number_format($finalFine, 0, ',', '.') . '.';
+                $msg .= ' Denda keterlambatan: Rp' . number_format($finalFine, 0, ',', '.') . '. Harap bayar denda di kasir admin perpustakaan.';
             }
 
             Notification::create([
@@ -130,16 +182,81 @@ class LoanService
     }
 
     // -------------------------------------------------------------------------
-    // Mark Fine Paid
+    // Fine Payment Request & Confirmation
     // -------------------------------------------------------------------------
 
+    /**
+     * Member mengajukan konfirmasi pembayaran denda cash ke admin.
+     */
+    public function requestFinePayment(Loan $loan): void
+    {
+        $currentFine = $loan->calculateCurrentFine();
+        abort_if($currentFine <= 0, 422, 'Tidak ada denda pada transaksi ini.');
+        abort_if(! is_null($loan->fine_paid_at), 422, 'Denda sudah lunas sebelumnya.');
+        abort_if(
+            $loan->fine_payment_status === 'pending',
+            422,
+            'Konfirmasi pembayaran denda sedang menunggu verifikasi admin.'
+        );
+
+        $loan->update([
+            'fine_payment_status'       => 'pending',
+            'fine_payment_requested_at' => now(),
+        ]);
+
+        Notification::create([
+            'user_id'    => $loan->borrower_id,
+            'type'       => 'fine_payment_requested',
+            'message'    => "Pengajuan konfirmasi pembayaran denda buku \"{$loan->book->title}\" sebesar Rp" . number_format($currentFine, 0, ',', '.') . " telah dikirim ke Admin.",
+            'created_at' => now(),
+        ]);
+    }
+
+    /**
+     * Admin mengonfirmasi pembayaran denda lunas.
+     */
     public function markFinePaid(Loan $loan): void
     {
-        abort_if($loan->fine_amount <= 0, 422, 'Tidak ada denda pada transaksi ini.');
+        abort_if($loan->fine_amount <= 0 && $loan->calculateCurrentFine() <= 0, 422, 'Tidak ada denda pada transaksi ini.');
         abort_if(! is_null($loan->fine_paid_at), 422, 'Denda sudah lunas sebelumnya.');
-        abort_if($loan->status !== 'returned', 422, 'Buku belum dikembalikan, denda belum dapat dikunci.');
 
-        $loan->update(['fine_paid_at' => now()]);
+        // Jika buku belum berstatus returned, proses return sekaligus atau kunci denda
+        $finalFine = (int) $loan->fine_amount > 0 ? $loan->fine_amount : $loan->calculateCurrentFine();
+
+        $loan->update([
+            'fine_amount'         => $finalFine,
+            'fine_paid_at'        => now(),
+            'fine_payment_status' => 'paid',
+        ]);
+
+        Notification::create([
+            'user_id'    => $loan->borrower_id,
+            'type'       => 'fine_paid',
+            'message'    => "Pembayaran denda sebesar Rp" . number_format($finalFine, 0, ',', '.') . " untuk buku \"{$loan->book->title}\" telah dikonfirmasi LUNAS oleh Admin.",
+            'created_at' => now(),
+        ]);
+    }
+
+    /**
+     * Admin menolak pengajuan konfirmasi pembayaran denda (misal: uang belum diterima / nominal kurang).
+     */
+    public function rejectFinePayment(Loan $loan, ?string $reason = null): void
+    {
+        abort_if($loan->fine_payment_status !== 'pending', 422, 'Tidak ada pengajuan verifikasi denda yang pending.');
+
+        $loan->update(['fine_payment_status' => 'rejected']);
+
+        $msg = "Pengajuan verifikasi pembayaran denda buku \"{$loan->book->title}\" ditolak oleh Admin (uang belum diterima).";
+        if ($reason) {
+            $msg .= " Alasan: {$reason}";
+        }
+
+        Notification::create([
+            'user_id'    => $loan->borrower_id,
+            'type'       => 'fine_payment_rejected',
+            'message'    => $msg,
+            'created_at' => now(),
+        ]);
     }
 
     // -------------------------------------------------------------------------
@@ -162,7 +279,7 @@ class LoanService
             return 0;
         }
 
-        $daysLate  = $today->diffInDays($loan->due_date);
+        $daysLate  = (int) abs($today->diffInDays($loan->due_date));
         $finePerDay = (int) Setting::get('fine_per_day', 2000);
 
         return $daysLate * $finePerDay;

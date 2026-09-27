@@ -15,6 +15,8 @@ class Loan extends Model
         'borrower_id', 'book_id', 'borrow_date', 'due_date',
         'return_date', 'status', 'fine_amount', 'fine_paid_at',
         'renewal_status', 'renewal_count', 'renewal_requested_at',
+        'return_status', 'return_requested_at',
+        'fine_payment_status', 'fine_payment_requested_at',
     ];
 
     protected $casts = [
@@ -23,6 +25,8 @@ class Loan extends Model
         'return_date' => 'date',
         'fine_paid_at' => 'datetime',
         'renewal_requested_at' => 'datetime',
+        'return_requested_at' => 'datetime',
+        'fine_payment_requested_at' => 'datetime',
     ];
 
     public function borrower(): BelongsTo
@@ -37,7 +41,7 @@ class Loan extends Model
 
     public function isOverdue(): bool
     {
-        return $this->status !== 'returned'
+        return ! in_array($this->status, ['returned', 'rejected', 'pending'])
             && $this->due_date
             && Carbon::today()->gt($this->due_date);
     }
@@ -48,7 +52,45 @@ class Loan extends Model
             return 0;
         }
 
-        return Carbon::today()->diffInDays($this->due_date);
+        return (int) abs(Carbon::today()->diffInDays($this->due_date));
+    }
+
+    /** Hitung denda saat ini secara dinamis */
+    public function calculateCurrentFine(): int
+    {
+        if ($this->status === 'returned') {
+            return (int) $this->fine_amount;
+        }
+
+        if ($this->isOverdue() || $this->status === 'overdue') {
+            $finePerDay = (int) Setting::get('fine_per_day', 2000);
+            return $this->daysOverdue() * $finePerDay;
+        }
+
+        return (int) $this->fine_amount;
+    }
+
+    /** Sinkronisasi status keterlambatan & denda berjalan untuk semua transaksi aktif */
+    public static function syncOverdueLoans(): void
+    {
+        $today = Carbon::today();
+        $finePerDay = (int) Setting::get('fine_per_day', 2000);
+
+        self::whereIn('status', ['borrowed', 'overdue'])
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', $today)
+            ->get()
+            ->each(function (Loan $loan) use ($today, $finePerDay) {
+                $daysLate = (int) abs($today->diffInDays($loan->due_date));
+                $fine = $daysLate * $finePerDay;
+
+                if ($loan->status !== 'overdue' || (int) $loan->fine_amount !== (int) $fine) {
+                    $loan->update([
+                        'status'      => 'overdue',
+                        'fine_amount' => $fine,
+                    ]);
+                }
+            });
     }
 
     /** Cek apakah ada anggota lain yang sedang antre/reservasi buku ini */
@@ -72,8 +114,20 @@ class Loan extends Model
     /** Label & warna badge status, mengikuti semantic color PRD */
     public function statusBadge(): array
     {
+        if ($this->return_status === 'pending') {
+            return ['label' => 'Menunggu Konfirmasi Pengembalian', 'color' => 'amber'];
+        }
+
+        if ($this->fine_payment_status === 'pending') {
+            return ['label' => 'Menunggu Konfirmasi Bayar Denda', 'color' => 'blue'];
+        }
+
         if ($this->status === 'borrowed' && $this->renewal_status === 'pending') {
             return ['label' => 'Dipinjam (Perpanjangan Diajukan)', 'color' => 'blue'];
+        }
+
+        if ($this->isOverdue() || $this->status === 'overdue') {
+            return ['label' => 'Terlambat (Overdue)', 'color' => 'red'];
         }
 
         return match ($this->status) {

@@ -36,20 +36,16 @@ class LoanController extends Controller
     {
         $user = Auth::user();
 
+        // Validasi aturan: Jika punya denda belum lunas atau buku terlambat, wajib lunas & kembali dulu
+        if (! $user->canBorrowBooks()) {
+            return back()->with('error', $user->getBorrowBlockReason());
+        }
+
         $maxActiveLoans = (int) (DB::table('settings')->where('key', 'max_active_loans')->value('value') ?? 3);
-        $maxUnpaidFine  = (int) (DB::table('settings')->where('key', 'max_unpaid_fine')->value('value') ?? 20000);
 
         $activeLoanCount = $user->loans()
             ->whereIn('status', ['pending', 'borrowed', 'overdue'])
             ->count();
-
-        $unpaidFine = $user->loans()->whereNull('fine_paid_at')->sum('fine_amount');
-
-        if ($unpaidFine >= $maxUnpaidFine) {
-            return back()->with('error', 'Kamu memiliki denda belum lunas sebesar Rp'
-                . number_format($unpaidFine, 0, ',', '.')
-                . '. Selesaikan pembayaran denda sebelum meminjam buku baru.');
-        }
 
         if ($activeLoanCount >= $maxActiveLoans) {
             return back()->with('error', "Kamu sudah mencapai batas maksimum {$maxActiveLoans} peminjaman aktif.");
@@ -110,20 +106,62 @@ class LoanController extends Controller
         return back()->with('success', 'Permintaan peminjaman dibatalkan.');
     }
 
-    /** Member mengembalikan buku yang sedang dipinjam */
+    /** Member mengajukan pengembalian buku (menunggu konfirmasi admin) */
     public function returnBook(Loan $loan, LoanService $loanService): RedirectResponse
     {
         abort_unless($loan->borrower_id === Auth::id(), 403);
         abort_unless(in_array($loan->status, ['borrowed', 'overdue']), 422, 'Hanya buku yang sedang dipinjam atau overdue yang bisa dikembalikan.');
 
-        $fine = $loanService->processReturn($loan);
-
-        $msg = 'Buku berhasil dikembalikan!';
-        if ($fine > 0) {
-            $msg .= ' Kamu memiliki denda sebesar Rp' . number_format($fine, 0, ',', '.') . '.';
+        if ($loan->return_status === 'pending') {
+            return back()->with('error', 'Pengajuan pengembalian sudah dikirim dan sedang menunggu konfirmasi admin.');
         }
 
-        return back()->with('success', $msg);
+        $loanService->requestReturn($loan);
+
+        // Notifikasi ke semua admin
+        $user = Auth::user();
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            \App\Models\Notification::create([
+                'user_id'    => $admin->id,
+                'type'       => 'return_requested',
+                'message'    => "Pengajuan Pengembalian: {$user->name} mengajukan pengembalian buku \"{$loan->book->title}\".",
+                'created_at' => now(),
+            ]);
+        }
+
+        return back()->with('success', 'Pengajuan pengembalian buku berhasil dikirim! Silakan serahkan buku fisik ke admin perpustakaan untuk dikonfirmasi.');
+    }
+
+    /** Member mengajukan konfirmasi pembayaran denda cash ke admin */
+    public function payFine(Loan $loan, LoanService $loanService): RedirectResponse
+    {
+        abort_unless($loan->borrower_id === Auth::id(), 403);
+
+        $currentFine = $loan->calculateCurrentFine();
+        if ($currentFine <= 0 || ! is_null($loan->fine_paid_at)) {
+            return back()->with('error', 'Tidak ada denda aktif yang perlu dibayar pada transaksi ini.');
+        }
+
+        if ($loan->fine_payment_status === 'pending') {
+            return back()->with('error', 'Pengajuan konfirmasi pembayaran denda sedang menunggu verifikasi admin.');
+        }
+
+        $loanService->requestFinePayment($loan);
+
+        // Notifikasi ke semua admin
+        $user = Auth::user();
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            \App\Models\Notification::create([
+                'user_id'    => $admin->id,
+                'type'       => 'fine_payment_requested',
+                'message'    => "Konfirmasi Pembayaran Denda: {$user->name} mengajukan verifikasi pembayaran denda Rp" . number_format($currentFine, 0, ',', '.') . " untuk buku \"{$loan->book->title}\".",
+                'created_at' => now(),
+            ]);
+        }
+
+        return back()->with('success', 'Pengajuan konfirmasi pembayaran denda sebesar Rp' . number_format($currentFine, 0, ',', '.') . ' berhasil dikirim! Petugas admin akan memverifikasi.');
     }
 
     /** Member mengajukan perpanjangan peminjaman buku */

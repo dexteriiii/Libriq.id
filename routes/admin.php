@@ -52,7 +52,9 @@ Route::middleware(['auth', 'role:admin'])
             Route::post('/{loan}/renew-approve', [LoanController::class, 'approveRenewal'])->name('renew-approve');
             Route::post('/{loan}/renew-reject',  [LoanController::class, 'rejectRenewal'])->name('renew-reject');
             Route::post('/{loan}/return',        [LoanController::class, 'processReturn'])->name('return');
-            Route::post('/{loan}/pay-fine',      [LoanController::class, 'markFinePaid'])->name('pay-fine');
+            Route::post('/{loan}/return-reject', [LoanController::class, 'rejectReturn'])->name('return-reject');
+            Route::post('/{loan}/pay-fine',        [LoanController::class, 'markFinePaid'])->name('pay-fine');
+            Route::post('/{loan}/pay-fine-reject', [LoanController::class, 'rejectFinePayment'])->name('pay-fine-reject');
         });
 
         // ── Users / Members ───────────────────────────────────────────────

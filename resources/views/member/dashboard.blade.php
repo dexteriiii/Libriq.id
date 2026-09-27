@@ -41,6 +41,24 @@
         </div>
     @endif
 
+    {{-- Overdue & Fine Warning Banner --}}
+    @if(auth()->user()->hasOverdueLoans() || auth()->user()->totalUnpaidFines() > 0)
+        <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-start sm:items-center gap-3">
+                <div class="p-2.5 bg-red-100 rounded-xl text-red-600 shrink-0 mt-0.5 sm:mt-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div>
+                    <p class="font-bold text-red-900 font-heading">Peminjaman Buku Baru Ditangguhkan</p>
+                    <p class="text-xs text-red-700 mt-0.5 leading-relaxed">{{ auth()->user()->getBorrowBlockReason() }}</p>
+                </div>
+            </div>
+            <a href="{{ route('member.loans.history') }}" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold whitespace-nowrap transition-colors shadow-sm shrink-0">
+                Lihat Detail Denda & Sirkulasi &rarr;
+            </a>
+        </div>
+    @endif
+
     {{-- Metric Cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-xl border border-stone-200 p-5">
@@ -79,35 +97,86 @@
             @else
                 <ul class="divide-y divide-stone-100">
                     @foreach ($activeLoans as $loan)
-                        @php $badge = $loan->statusBadge(); @endphp
-                        <li class="flex items-center gap-4 px-5 py-4">
-                            <img src="{{ $loan->book->cover }}" alt="{{ $loan->book->title }}" class="w-12 h-16 object-cover rounded-md bg-stone-100 flex-shrink-0">
-                            <div class="min-w-0 flex-1">
-                                <p class="font-medium text-stone-900 truncate">{{ $loan->book->title }}</p>
-                                <p class="text-sm text-stone-500 truncate">{{ $loan->book->author }}</p>
-                                @if ($loan->due_date)
-                                    <p class="text-xs text-stone-400 mt-0.5">Jatuh tempo: {{ $loan->due_date->format('d M Y') }}</p>
-                                @endif
+                        @php 
+                            $badge = $loan->statusBadge(); 
+                            $isOverdue = $loan->isOverdue() || $loan->status === 'overdue';
+                            $currentFine = $loan->calculateCurrentFine();
+                        @endphp
+                        <li class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 {{ $isOverdue ? 'bg-red-50/40' : '' }}">
+                            <div class="flex items-center gap-4 min-w-0 flex-1">
+                                <img src="{{ $loan->book->cover }}" alt="{{ $loan->book->title }}" class="w-12 h-16 object-cover rounded-md bg-stone-100 flex-shrink-0 shadow-sm">
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-medium text-stone-900 truncate">{{ $loan->book->title }}</p>
+                                    <p class="text-sm text-stone-500 truncate">{{ $loan->book->author }}</p>
+                                    @if ($loan->due_date)
+                                        <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-xs">
+                                            <span class="{{ $isOverdue ? 'text-red-600 font-semibold' : 'text-stone-400' }}">
+                                                Jatuh tempo: {{ $loan->due_date->format('d M Y') }}
+                                            </span>
+                                            @if($isOverdue)
+                                                <span class="text-red-600 font-bold bg-red-100 px-1.5 py-0.5 rounded text-[10px]">
+                                                    Terlambat {{ $loan->daysOverdue() }} hari
+                                                </span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                    @if($currentFine > 0)
+                                        <div class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1">
+                                            <span>Denda: Rp {{ number_format($currentFine, 0, ',', '.') }}</span>
+                                            @if(! $loan->fine_paid_at)
+                                                <span class="text-red-500 font-normal text-[10px]">(Belum Lunas)</span>
+                                            @else
+                                                <span class="text-emerald-600 font-normal text-[10px]">(Lunas)</span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2 flex-shrink-0">
+                            <div class="flex flex-wrap items-center gap-2 shrink-0 self-end sm:self-center">
                                 <span class="text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap
                                     bg-{{ $badge['color'] }}-50 text-{{ $badge['color'] }}-700">
                                     {{ $badge['label'] }}
                                 </span>
 
-                                @if ($loan->status === 'borrowed')
+                                @if ($loan->return_status === 'pending')
+                                    <span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-lg border border-amber-200">
+                                        Menunggu Konfirmasi Admin
+                                    </span>
+                                @else
+                                    <form method="POST" action="{{ route('member.loans.return', $loan) }}"
+                                          onsubmit="return confirm('Ajukan pengembalian buku ini? Silakan serahkan buku fisik ke petugas perpustakaan.');">
+                                        @csrf
+                                        <button type="submit" class="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors shadow-sm">
+                                            Kembalikan Buku
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if ($currentFine > 0 && ! $loan->fine_paid_at)
+                                    @if ($loan->fine_payment_status === 'pending')
+                                        <span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg border border-blue-200">
+                                            Verifikasi Denda Diajukan
+                                        </span>
+                                    @else
+                                        <form method="POST" action="{{ route('member.loans.pay-fine', $loan) }}"
+                                              onsubmit="return confirm('Konfirmasi bahwa kamu sudah/akan membayar denda cash sebesar Rp {{ number_format($currentFine, 0, ',', '.') }} ke admin?');">
+                                            @csrf
+                                            <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition-colors shadow-sm">
+                                                Konfirmasi Bayar Cash
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endif
+
+                                @if (! $isOverdue && $loan->status === 'borrowed' && $loan->return_status !== 'pending')
                                     @if ($loan->renewal_status === 'pending')
                                         <span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg border border-blue-200">
-                                            Menunggu Approval Admin
+                                            Perpanjangan Diajukan
                                         </span>
                                     @elseif ($loan->hasPendingReservation())
                                         <span class="px-2.5 py-1 bg-stone-100 text-stone-500 text-xs font-medium rounded-lg" title="Ada antrean reservasi dari anggota lain">
                                             Ada Antrean
                                         </span>
-
-                                        
-                                    @elseif ($loan->isOverdue())
-                                        {{-- Overdue: harus dikembalikan --}}
                                     @else
                                         <form method="POST" action="{{ route('member.loans.renew', $loan) }}"
                                               onsubmit="return confirm('Ajukan perpanjangan masa peminjaman untuk buku ini?');">

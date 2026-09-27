@@ -77,18 +77,25 @@
         <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-6">
             <h3 class="font-bold text-stone-900 text-base border-b border-stone-200 pb-3">Ringkasan Denda & Aksi</h3>
 
+            @php
+                $currentFine = $loan->calculateCurrentFine();
+            @endphp
             <div class="bg-stone-50 p-4 rounded-xl border border-stone-200">
                 <p class="text-xs text-stone-500">Nominal Denda</p>
-                <p class="text-2xl font-bold font-mono text-stone-900 mt-1">Rp {{ number_format($loan->fine_amount, 0, ',', '.') }}</p>
+                <p class="text-2xl font-bold font-mono text-stone-900 mt-1">Rp {{ number_format($currentFine, 0, ',', '.') }}</p>
 
-                @if($loan->fine_amount > 0)
+                @if($currentFine > 0)
                     @if($loan->fine_paid_at)
                         <span class="inline-block mt-2 px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full">
                             Lunas pada {{ $loan->fine_paid_at->format('d M Y, H:i') }}
                         </span>
-                    @else
+                    @elseif($loan->status === 'returned')
                         <span class="inline-block mt-2 px-2.5 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full">
-                            Belum Dibayar
+                            Belum Dibayar (Final)
+                        </span>
+                    @else
+                        <span class="inline-block mt-2 px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full">
+                            Denda Berjalan (Terlambat {{ $loan->daysOverdue() }} hari)
                         </span>
                     @endif
                 @endif

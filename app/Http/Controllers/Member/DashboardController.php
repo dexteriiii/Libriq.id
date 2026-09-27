@@ -26,18 +26,17 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        $unpaidFine = $user->loans()->whereNull('fine_paid_at')->sum('fine_amount');
-
         $stats = [
             'active_count'   => $activeLoans->count(),
-            'overdue_count'  => $activeLoans->where('status', 'overdue')->count(),
+            'overdue_count'  => $user->overdueLoansCount(),
             'due_soon_count' => $activeLoans->filter(function (Loan $loan) {
                 return $loan->status === 'borrowed'
                     && $loan->due_date
+                    && ! $loan->isOverdue()
                     && now()->diffInDays($loan->due_date, false) <= 3
                     && now()->diffInDays($loan->due_date, false) >= 0;
             })->count(),
-            'unpaid_fine' => $unpaidFine,
+            'unpaid_fine' => $user->totalUnpaidFines(),
         ];
 
         return view('member.dashboard', [

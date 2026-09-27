@@ -17,7 +17,14 @@ class DashboardController extends Controller
         $totalMembers   = User::where('role', 'member')->count();
         $totalBorrowed  = Loan::whereIn('status', ['borrowed', 'overdue'])->count();
         $totalOverdue   = Loan::where('status', 'overdue')->count();
-        $totalPending   = Loan::where('status', 'pending')->count();
+        $totalPending = Loan::where(function ($q) {
+            $q->where('status', 'pending')
+              ->orWhere('renewal_status', 'pending')
+              ->orWhere('return_status', 'pending')
+              ->orWhere(function ($fq) {
+                  $fq->where('fine_payment_status', 'pending')->whereNull('fine_paid_at');
+              });
+        })->count();
         $totalUnpaidFine = (int) Loan::whereNull('fine_paid_at')
             ->where('fine_amount', '>', 0)
             ->sum('fine_amount');

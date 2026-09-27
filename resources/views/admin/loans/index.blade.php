@@ -104,12 +104,17 @@
                                 <div>Jatuh Tempo: <strong class="{{ $loan->isOverdue() ? 'text-red-600' : '' }}">{{ $loan->due_date ? $loan->due_date->format('d M Y') : '-' }}</strong></div>
                             </td>
                             <td class="px-6 py-4 text-xs font-mono">
-                                @if($loan->fine_amount > 0)
-                                    <span class="font-bold text-red-600">Rp {{ number_format($loan->fine_amount, 0, ',', '.') }}</span>
+                                @php
+                                    $currentFine = $loan->calculateCurrentFine();
+                                @endphp
+                                @if($currentFine > 0)
+                                    <span class="font-bold text-red-600">Rp {{ number_format($currentFine, 0, ',', '.') }}</span>
                                     @if($loan->fine_paid_at)
                                         <div class="text-emerald-600 font-sans text-[10px]">Lunas ({{ $loan->fine_paid_at->format('d M') }})</div>
-                                    @else
+                                    @elseif($loan->status === 'returned')
                                         <div class="text-red-500 font-sans text-[10px]">Belum Dibayar</div>
+                                    @else
+                                        <div class="text-amber-600 font-sans text-[10px]">Berjalan ({{ $loan->daysOverdue() }} hr)</div>
                                     @endif
                                 @else
                                     <span class="text-stone-400">Rp 0</span>

@@ -51,7 +51,19 @@ class LoanController extends Controller
             ->latest('renewal_requested_at')
             ->get();
 
-        return view('admin.loans.pending', compact('loans', 'renewals'));
+        $returns = Loan::with(['borrower', 'book'])
+            ->whereIn('status', ['borrowed', 'overdue'])
+            ->where('return_status', 'pending')
+            ->latest('return_requested_at')
+            ->get();
+
+        $finePayments = Loan::with(['borrower', 'book'])
+            ->where('fine_payment_status', 'pending')
+            ->whereNull('fine_paid_at')
+            ->latest('fine_payment_requested_at')
+            ->get();
+
+        return view('admin.loans.pending', compact('loans', 'renewals', 'returns', 'finePayments'));
     }
 
     // ─── Approve ─────────────────────────────────────────────────────────────
@@ -100,12 +112,23 @@ class LoanController extends Controller
     {
         $finalFine = $this->loanService->processReturn($loan);
 
-        $msg = "Pengembalian buku berhasil dicatat.";
+        $msg = "Pengembalian buku #{$loan->id} berhasil dikonfirmasi.";
         if ($finalFine > 0) {
-            $msg .= ' Denda: Rp' . number_format($finalFine, 0, ',', '.');
+            $msg .= ' Denda keterlambatan terkunci: Rp' . number_format($finalFine, 0, ',', '.');
         }
 
         return back()->with('success', $msg);
+    }
+
+    // ─── Reject Return ─────────────────────────────────────────────────────────
+
+    public function rejectReturn(Request $request, Loan $loan): RedirectResponse
+    {
+        $request->validate(['reason' => ['nullable', 'string', 'max:255']]);
+
+        $this->loanService->rejectReturn($loan, $request->input('reason'));
+
+        return back()->with('success', "Pengajuan pengembalian buku #{$loan->id} telah ditolak.");
     }
 
     // ─── Mark Fine Paid ───────────────────────────────────────────────────────
@@ -114,7 +137,18 @@ class LoanController extends Controller
     {
         $this->loanService->markFinePaid($loan);
 
-        return back()->with('success', "Denda peminjaman #{$loan->id} telah dicatat sebagai lunas.");
+        return back()->with('success', "Pembayaran denda peminjaman #{$loan->id} telah dikonfirmasi LUNAS.");
+    }
+
+    // ─── Reject Fine Payment ───────────────────────────────────────────────────
+
+    public function rejectFinePayment(Request $request, Loan $loan): RedirectResponse
+    {
+        $request->validate(['reason' => ['nullable', 'string', 'max:255']]);
+
+        $this->loanService->rejectFinePayment($loan, $request->input('reason'));
+
+        return back()->with('success', "Pengajuan verifikasi pembayaran denda peminjaman #{$loan->id} telah ditolak.");
     }
 
     // ─── Show detail ──────────────────────────────────────────────────────────
