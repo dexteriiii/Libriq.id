@@ -9,14 +9,15 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      *
-     * Urutan: User → Book → Loan (karena Loan bergantung pada User & Book)
+     * Urutan: Users → Books → Loans → Settings
      */
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
-            BookSeeder::class,
-            LoanSeeder::class,
+            UsersTableSeeder::class,
+            BooksTableSeeder::class,
+            LoansTableSeeder::class,
+            SettingsTableSeeder::class,
         ]);
     }
 }

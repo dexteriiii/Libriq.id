@@ -132,6 +132,19 @@
                         </div>
                     @endif
 
+                    {{-- Demo Admin Info --}}
+                    <!-- HAPUS DARI SINI JIKA INGIN MENGHAPUS INFO DEMO LOGIN -->
+                    <div class="mb-6 p-4 rounded-xl bg-orange-50 border border-orange-200 text-orange-900 text-xs">
+                        <div class="font-bold text-orange-700 mb-1 text-sm flex items-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Akun Demo Admin:
+                        </div>
+                        <div class="font-mono text-stone-800">
+                            Email: <strong class="text-stone-900">admin@gmail.com</strong> | Password: <strong class="text-stone-900">password</strong>
+                        </div>
+                    </div>
+                    <!-- SAMPAI SINI -->
+
                     <form method="POST" action="{{ route('login') }}" class="space-y-5">
                         @csrf
 
