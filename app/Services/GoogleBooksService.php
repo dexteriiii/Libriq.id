@@ -36,23 +36,15 @@ class GoogleBooksService
 
         $result = null;
 
-        // Strategi 1: Coba Google Books API dengan prefix 'isbn:'
+        // Strategi 1: Coba Google Books API dengan prefix 'isbn:' (exact lookup)
         try {
             $result = $this->queryApi("isbn:{$cleanIsbn}");
         } catch (\Exception $e) {
             Log::info("GoogleBooksService: queryApi isbn:{$cleanIsbn} failed or rate limited", ['error' => $e->getMessage()]);
         }
 
-        // Strategi 2: Jika belum ketemu, coba Google Books API tanpa prefix 'isbn:'
-        if (! $result) {
-            try {
-                $result = $this->queryApi($cleanIsbn);
-            } catch (\Exception $e) {
-                Log::info("GoogleBooksService: queryApi plain {$cleanIsbn} failed", ['error' => $e->getMessage()]);
-            }
-        }
-
-        // Strategi 3: Fallback ke Open Library API jika Google Books tidak menemukan atau error
+        // Strategi 2: Fallback ke Open Library API (lebih andal untuk pencarian ISBN)
+        // Lewati Google Books plain-number query karena bisa mengembalikan buku yang salah
         if (! $result) {
             $result = $this->fetchFromOpenLibrary($cleanIsbn);
         }

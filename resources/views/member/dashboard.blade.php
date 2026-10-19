@@ -104,9 +104,13 @@
                         @endphp
                         <li class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 {{ $isOverdue ? 'bg-red-50/40' : '' }}">
                             <div class="flex items-center gap-4 min-w-0 flex-1">
-                                <img src="{{ $loan->book->cover }}" alt="{{ $loan->book->title }}" class="w-12 h-16 object-cover rounded-md bg-stone-100 flex-shrink-0 shadow-sm">
+                                <a href="{{ route('member.catalog.show', $loan->book) }}" class="shrink-0 group/cover block">
+                                    <img src="{{ $loan->book->cover }}" alt="{{ $loan->book->title }}" class="w-12 h-16 object-cover rounded-md bg-stone-100 shadow-xs group-hover/cover:opacity-90 transition-opacity">
+                                </a>
                                 <div class="min-w-0 flex-1">
-                                    <p class="font-medium text-stone-900 truncate">{{ $loan->book->title }}</p>
+                                    <a href="{{ route('member.catalog.show', $loan->book) }}" class="font-medium text-stone-900 truncate block hover:text-orange-600 transition-colors">
+                                        {{ $loan->book->title }}
+                                    </a>
                                     <p class="text-sm text-stone-500 truncate">{{ $loan->book->author }}</p>
                                     @if ($loan->due_date)
                                         <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-xs">
@@ -208,7 +212,9 @@
                 <ul class="divide-y divide-stone-100">
                     @foreach ($recentHistory as $loan)
                         <li class="px-5 py-3">
-                            <p class="text-sm font-medium text-stone-900 truncate">{{ $loan->book->title }}</p>
+                            <a href="{{ route('member.catalog.show', $loan->book) }}" class="text-sm font-medium text-stone-900 truncate block hover:text-orange-600 transition-colors">
+                                {{ $loan->book->title }}
+                            </a>
                             <p class="text-xs text-stone-400">Dikembalikan {{ $loan->return_date ? $loan->return_date->format('d M Y') : '—' }}</p>
                         </li>
                     @endforeach

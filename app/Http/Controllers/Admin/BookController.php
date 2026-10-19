@@ -107,7 +107,7 @@ class BookController extends Controller
         if (! $data) {
             $searchQuery = $isbn ?: $title;
             return response()->json([
-                'error' => "Data buku untuk \"{$searchQuery}\" tidak ditemukan di Google Books. Silakan input manual.",
+                'error' => "Data buku untuk \"{$searchQuery}\" tidak ditemukan di Google Books maupun Open Library. Silakan input manual.",
             ], 404);
         }
 
