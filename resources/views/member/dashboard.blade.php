@@ -1,29 +1,29 @@
 <x-layouts.member title="Beranda — Libriq.id">
     {{-- Member Profile & Welcome Banner --}}
-    <div class="mb-8 bg-white border border-stone-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div class="flex items-center gap-4">
+    <div class="mb-6 sm:mb-8 bg-white border border-stone-200 rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+        <div class="flex items-center gap-3 sm:gap-4">
             <div class="relative shrink-0">
-                <img src="{{ auth()->user()->avatar_url }}" alt="Avatar {{ auth()->user()->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-orange-500 shadow-sm">
-                <span class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" title="Member Aktif"></span>
+                <img src="{{ auth()->user()->avatar_url }}" alt="Avatar {{ auth()->user()->name }}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-orange-500 shadow-sm">
+                <span class="absolute bottom-0 right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-emerald-500 border-2 border-white rounded-full" title="Member Aktif"></span>
             </div>
-            <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="font-heading text-xl sm:text-2xl font-bold text-stone-900">Halo, {{ auth()->user()->name }} 👋</h1>
-                    <span class="px-2.5 py-0.5 bg-orange-100 text-orange-800 text-xs font-semibold rounded-full">Anggota</span>
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h1 class="font-heading text-lg sm:text-2xl font-bold text-stone-900 truncate">Halo, {{ auth()->user()->name }} 👋</h1>
+                    <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-[10px] sm:text-xs font-semibold rounded-full shrink-0">Anggota</span>
                 </div>
-                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone-500 mt-1">
+                <div class="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-1 text-xs text-stone-500 mt-1">
                     <span class="font-mono bg-stone-100 px-2 py-0.5 rounded text-stone-600 font-medium">ID: {{ auth()->user()->member_id ?? 'Member' }}</span>
-                    <span>{{ auth()->user()->email }}</span>
+                    <span class="truncate">{{ auth()->user()->email }}</span>
                 </div>
             </div>
         </div>
 
-        <div class="flex items-center gap-3 shrink-0">
-            <a href="{{ route('member.profile.edit') }}" class="px-4 py-2.5 bg-stone-50 border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 hover:text-stone-900 transition-colors flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 shrink-0">
+            <a href="{{ route('member.profile.edit') }}" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-stone-50 border border-stone-200 text-stone-700 rounded-xl text-xs sm:text-sm font-medium hover:bg-stone-100 hover:text-stone-900 transition-colors flex items-center justify-center gap-2">
                 <svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                Ubah Foto / Profil
+                Ubah Profil
             </a>
-            <a href="{{ route('member.catalog.index') }}" class="px-4 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('member.catalog.index') }}" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-orange-600 text-white rounded-xl text-xs sm:text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm flex items-center justify-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                 Jelajahi Katalog
             </a>
@@ -53,29 +53,29 @@
                     <p class="text-xs text-red-700 mt-0.5 leading-relaxed">{{ auth()->user()->getBorrowBlockReason() }}</p>
                 </div>
             </div>
-            <a href="{{ route('member.loans.history') }}" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold whitespace-nowrap transition-colors shadow-sm shrink-0">
+            <a href="{{ route('member.loans.history') }}" class="w-full sm:w-auto text-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold whitespace-nowrap transition-colors shadow-sm shrink-0">
                 Lihat Detail Denda & Sirkulasi &rarr;
             </a>
         </div>
     @endif
 
-    {{-- Metric Cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white rounded-xl border border-stone-200 p-5">
-            <p class="text-sm text-stone-500">Pinjaman Aktif</p>
-            <p class="font-heading text-3xl font-bold text-orange-600 mt-1">{{ $stats['active_count'] }}</p>
+    {{-- Metric Cards (2 columns on mobile, 4 on desktop) --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div class="bg-white rounded-xl border border-stone-200 p-4 sm:p-5 shadow-sm">
+            <p class="text-xs sm:text-sm text-stone-500 font-medium">Pinjaman Aktif</p>
+            <p class="font-heading text-2xl sm:text-3xl font-bold text-orange-600 mt-1">{{ $stats['active_count'] }}</p>
         </div>
-        <div class="bg-white rounded-xl border border-stone-200 p-5">
-            <p class="text-sm text-stone-500">Segera Jatuh Tempo</p>
-            <p class="font-heading text-3xl font-bold text-amber-500 mt-1">{{ $stats['due_soon_count'] }}</p>
+        <div class="bg-white rounded-xl border border-stone-200 p-4 sm:p-5 shadow-sm">
+            <p class="text-xs sm:text-sm text-stone-500 font-medium">Segera Tempo</p>
+            <p class="font-heading text-2xl sm:text-3xl font-bold text-amber-500 mt-1">{{ $stats['due_soon_count'] }}</p>
         </div>
-        <div class="bg-white rounded-xl border border-stone-200 p-5">
-            <p class="text-sm text-stone-500">Terlambat</p>
-            <p class="font-heading text-3xl font-bold text-red-600 mt-1">{{ $stats['overdue_count'] }}</p>
+        <div class="bg-white rounded-xl border border-stone-200 p-4 sm:p-5 shadow-sm">
+            <p class="text-xs sm:text-sm text-stone-500 font-medium">Terlambat</p>
+            <p class="font-heading text-2xl sm:text-3xl font-bold text-red-600 mt-1">{{ $stats['overdue_count'] }}</p>
         </div>
-        <div class="bg-white rounded-xl border border-stone-200 p-5">
-            <p class="text-sm text-stone-500">Denda Belum Lunas</p>
-            <p class="font-heading text-3xl font-bold {{ $stats['unpaid_fine'] > 0 ? 'text-red-600' : 'text-emerald-600' }} mt-1">
+        <div class="bg-white rounded-xl border border-stone-200 p-4 sm:p-5 shadow-sm">
+            <p class="text-xs sm:text-sm text-stone-500 font-medium">Denda Aktif</p>
+            <p class="font-heading text-lg sm:text-2xl font-bold {{ $stats['unpaid_fine'] > 0 ? 'text-red-600' : 'text-emerald-600' }} mt-1 truncate">
                 Rp{{ number_format($stats['unpaid_fine'], 0, ',', '.') }}
             </p>
         </div>

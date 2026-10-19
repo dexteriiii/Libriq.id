@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Admin Dashboard — Libriq.id' }}</title>
 
@@ -23,18 +23,23 @@
 
     {{-- Alpine.js --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>[x-cloak] { display: none !important; }</style>
+    <style>
+        [x-cloak] { display: none !important; }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+        }
+    </style>
 </head>
 <body class="bg-stone-50 antialiased text-stone-900" x-data="{ sidebarOpen: false }">
     <div class="flex h-screen overflow-hidden">
         
         {{-- Mobile sidebar backdrop --}}
-        <div x-show="sidebarOpen" x-cloak class="fixed inset-0 z-40 bg-stone-900/50 lg:hidden" @click="sidebarOpen = false"></div>
+        <div x-show="sidebarOpen" x-cloak class="fixed inset-0 z-40 bg-stone-900/60 backdrop-blur-sm lg:hidden transition-opacity" @click="sidebarOpen = false"></div>
 
         {{-- Sidebar --}}
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-stone-200 flex flex-col transition-transform duration-300 lg:static lg:translate-x-0">
-            {{-- Logo --}}
-            <div class="h-16 flex items-center px-6 border-b border-stone-200 shrink-0">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-72 lg:w-64 bg-white border-r border-stone-200 flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 shadow-2xl lg:shadow-none">
+            {{-- Logo & Close Button --}}
+            <div class="h-16 flex items-center justify-between px-6 border-b border-stone-200 shrink-0">
                 <div class="flex items-center gap-2.5">
                     <svg class="w-7 h-7" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="4" y="6" width="8" height="28" rx="2" fill="#ea580c" opacity="0.9"/>
@@ -42,33 +47,36 @@
                         <rect x="24" y="8" width="8" height="26" rx="2" fill="#ea580c" opacity="0.8"/>
                         <path d="M34 8 L38 6 L38 34 L34 32Z" fill="#ea580c" opacity="0.6"/>
                     </svg>
-                    <span class="text-xl font-bold font-heading tracking-tight">Libriq.id</span>
+                    <span class="text-xl font-bold font-heading tracking-tight text-stone-900">Libriq<span class="text-orange-600">.id</span></span>
                 </div>
+                <button @click="sidebarOpen = false" class="lg:hidden p-1.5 text-stone-400 hover:text-stone-700 rounded-lg hover:bg-stone-100" aria-label="Tutup Menu">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
             </div>
 
             {{-- Nav Links --}}
             <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'bg-orange-50 text-orange-700 font-semibold' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900 font-medium' }} flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.dashboard') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                     Dashboard
                 </a>
-                <a href="{{ route('admin.books.index') }}" class="{{ request()->routeIs('admin.books.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                <a href="{{ route('admin.books.index') }}" class="{{ request()->routeIs('admin.books.*') ? 'bg-orange-50 text-orange-700 font-semibold' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900 font-medium' }} flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.books.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     Katalog Buku
                 </a>
-                <a href="{{ route('admin.loans.index') }}" class="{{ request()->routeIs('admin.loans.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                <a href="{{ route('admin.loans.index') }}" class="{{ request()->routeIs('admin.loans.*') ? 'bg-orange-50 text-orange-700 font-semibold' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900 font-medium' }} flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.loans.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                     Sirkulasi
                 </a>
-                <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'bg-orange-50 text-orange-700 font-semibold' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900 font-medium' }} flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.users.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     Anggota
                 </a>
-                <a href="{{ route('admin.insights.index') }}" class="{{ request()->routeIs('admin.insights.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                <a href="{{ route('admin.insights.index') }}" class="{{ request()->routeIs('admin.insights.*') ? 'bg-orange-50 text-orange-700 font-semibold' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900 font-medium' }} flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.insights.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     Insight & Analitik
                 </a>
-                <a href="{{ route('admin.settings.index') }}" class="{{ request()->routeIs('admin.settings.*') ? 'bg-orange-50 text-orange-700' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' }} flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors">
+                <a href="{{ route('admin.settings.index') }}" class="{{ request()->routeIs('admin.settings.*') ? 'bg-orange-50 text-orange-700 font-semibold' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900 font-medium' }} flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.settings.*') ? 'text-orange-600' : 'text-stone-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     Pengaturan
                 </a>
@@ -92,22 +100,27 @@
             </div>
         </aside>
 
-        {{-- Main Wrapper --}}
+        {{-- Main Content Wrapper --}}
         <div class="flex-1 flex flex-col h-screen overflow-hidden">
             {{-- Topbar --}}
-            <header class="h-16 bg-white border-b border-stone-200 flex items-center justify-between px-4 sm:px-6 shrink-0">
-                <div class="flex items-center gap-4">
-                    <button @click="sidebarOpen = true" class="lg:hidden p-2 text-stone-500 hover:text-stone-900 rounded-lg focus:bg-stone-100">
+            <header class="h-16 bg-white border-b border-stone-200 flex items-center justify-between px-4 sm:px-6 shrink-0 z-30">
+                <div class="flex items-center gap-3">
+                    <button @click="sidebarOpen = true" class="lg:hidden p-2 text-stone-600 hover:text-stone-900 rounded-lg hover:bg-stone-100 focus:outline-none" aria-label="Buka Menu">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
+                    <div class="lg:hidden flex items-center gap-2">
+                        <span class="font-bold font-heading text-lg text-stone-900">Libriq<span class="text-orange-600">.id</span></span>
+                        <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-[10px] font-bold rounded-full">Admin</span>
+                    </div>
                 </div>
-                <div class="flex items-center gap-4">
+
+                <div class="flex items-center gap-3">
                     @php
                         $adminNotifs = \App\Models\Notification::where('user_id', auth()->id())->latest('created_at')->take(5)->get();
                         $unreadAdminNotifsCount = \App\Models\Notification::where('user_id', auth()->id())->whereNull('read_at')->count();
                     @endphp
                     <div x-data="{ notifOpen: false }" class="relative">
-                        <button @click="notifOpen = !notifOpen" @click.away="notifOpen = false" class="relative p-2 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100 transition-colors focus:outline-none">
+                        <button @click="notifOpen = !notifOpen" @click.away="notifOpen = false" class="relative p-2 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100 transition-colors focus:outline-none" aria-label="Notifikasi">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                             @if($unreadAdminNotifsCount > 0)
                                 <span class="absolute top-1 right-1 px-1.5 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded-full border-2 border-white">
@@ -117,7 +130,7 @@
                         </button>
 
                         {{-- Dropdown Notifications --}}
-                        <div x-show="notifOpen" x-cloak class="absolute right-0 mt-2 w-80 bg-white border border-stone-200 rounded-2xl shadow-xl py-2 z-50">
+                        <div x-show="notifOpen" x-cloak class="absolute right-0 mt-2 w-72 sm:w-80 bg-white border border-stone-200 rounded-2xl shadow-xl py-2 z-50">
                             <div class="px-4 py-2 border-b border-stone-100 flex justify-between items-center">
                                 <h4 class="font-bold text-sm text-stone-900">Notifikasi Admin</h4>
                                 <span class="text-xs text-orange-600 font-semibold">{{ $unreadAdminNotifsCount }} belum dibaca</span>
@@ -145,9 +158,35 @@
             </header>
 
             {{-- Main Content --}}
-            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8">
                 {{ $slot }}
             </main>
+
+            {{-- Mobile Bottom Navigation Bar for Admin --}}
+            <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 safe-bottom shadow-lg">
+                <div class="grid grid-cols-5 h-16 max-w-md mx-auto">
+                    <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->routeIs('admin.dashboard') ? 'text-orange-600 font-bold' : 'text-stone-500 hover:text-stone-900 font-medium' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ request()->routeIs('admin.dashboard') ? '2.5' : '2' }}" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                        <span class="text-[10px]">Dashboard</span>
+                    </a>
+                    <a href="{{ route('admin.books.index') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->routeIs('admin.books.*') ? 'text-orange-600 font-bold' : 'text-stone-500 hover:text-stone-900 font-medium' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ request()->routeIs('admin.books.*') ? '2.5' : '2' }}" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        <span class="text-[10px]">Buku</span>
+                    </a>
+                    <a href="{{ route('admin.loans.index') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->routeIs('admin.loans.*') ? 'text-orange-600 font-bold' : 'text-stone-500 hover:text-stone-900 font-medium' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ request()->routeIs('admin.loans.*') ? '2.5' : '2' }}" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                        <span class="text-[10px]">Sirkulasi</span>
+                    </a>
+                    <a href="{{ route('admin.users.index') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->routeIs('admin.users.*') ? 'text-orange-600 font-bold' : 'text-stone-500 hover:text-stone-900 font-medium' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ request()->routeIs('admin.users.*') ? '2.5' : '2' }}" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <span class="text-[10px]">Anggota</span>
+                    </a>
+                    <button @click="sidebarOpen = true" class="flex flex-col items-center justify-center gap-1 text-stone-500 hover:text-stone-900 font-medium">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        <span class="text-[10px]">Menu</span>
+                    </button>
+                </div>
+            </nav>
         </div>
     </div>
 </body>

@@ -5,8 +5,8 @@
             <h1 class="text-2xl font-bold font-heading text-stone-900">Manajemen Katalog</h1>
             <p class="text-stone-500 mt-1">Kelola data buku, stok fisik, dan metadata.</p>
         </div>
-        <div class="flex gap-2">
-            <a href="{{ route('admin.books.create') }}" class="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors shadow-sm flex items-center gap-2">
+        <div class="flex gap-2 w-full sm:w-auto">
+            <a href="{{ route('admin.books.create') }}" class="w-full sm:w-auto justify-center px-4 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah Buku Baru
             </a>

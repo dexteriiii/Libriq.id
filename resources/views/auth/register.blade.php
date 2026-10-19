@@ -33,11 +33,11 @@
         </div>
 
         {{-- Right Panel — Register Form --}}
-        <div class="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-12">
+        <div class="flex-1 flex items-center justify-center p-4 sm:p-8 lg:p-12">
             <div class="w-full max-w-md">
 
                 {{-- Mobile logo --}}
-                <div class="lg:hidden flex items-center justify-center gap-3 mb-8">
+                <div class="lg:hidden flex items-center justify-center gap-3 mb-6">
                     <svg class="w-9 h-9" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="4" y="6" width="8" height="28" rx="2" fill="#ea580c" opacity="0.9"/>
                         <rect x="14" y="4" width="8" height="32" rx="2" fill="#ea580c"/>
@@ -48,7 +48,7 @@
                 </div>
 
                 {{-- Form Card --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 sm:p-10">
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-10">
                     <div class="hidden lg:flex items-center justify-center gap-2.5 mb-6">
                         <svg class="w-8 h-8" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="4" y="6" width="8" height="28" rx="2" fill="#ea580c" opacity="0.9"/>

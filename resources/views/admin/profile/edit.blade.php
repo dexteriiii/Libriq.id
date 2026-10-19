@@ -1,10 +1,10 @@
 <x-layouts.admin title="Profil Admin — Libriq.id">
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold font-heading text-stone-900">Profil Saya (Administrator)</h1>
-            <p class="text-stone-500 mt-1">Perbarui foto profil, nama, email, dan kata sandimu.</p>
+            <p class="text-stone-500 mt-1 text-sm">Perbarui foto profil, nama, email, dan kata sandimu.</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-lg text-sm font-medium hover:bg-stone-50 transition-colors shadow-sm">
+        <a href="{{ route('admin.dashboard') }}" class="w-full sm:w-auto text-center px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-50 transition-colors shadow-sm">
             &larr; Kembali ke Dashboard
         </a>
     </div>
@@ -43,7 +43,7 @@
                   this.$refs.fileInput.value = '';
               }
           }" 
-          class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 sm:p-8 space-y-6 max-w-2xl">
+          class="bg-white rounded-2xl border border-stone-200 shadow-sm p-4 sm:p-8 space-y-6 max-w-2xl">
         @csrf
         @method('PUT')
 
@@ -103,11 +103,11 @@
             </div>
         </div>
 
-        <div class="flex justify-end gap-3 border-t border-stone-200 pt-6">
-            <a href="{{ route('admin.dashboard') }}" class="px-5 py-2.5 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-50 transition-colors">
+        <div class="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 border-t border-stone-200 pt-6">
+            <a href="{{ route('admin.dashboard') }}" class="w-full sm:w-auto text-center px-5 py-2.5 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-50 transition-colors">
                 Batal
             </a>
-            <button type="submit" class="px-6 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm">
+            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm">
                 Simpan Profil
             </button>
         </div>

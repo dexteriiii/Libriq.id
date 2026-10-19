@@ -78,11 +78,11 @@
         </div>
 
         {{-- Right Panel — Login Form --}}
-        <div class="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-12">
+        <div class="flex-1 flex items-center justify-center p-4 sm:p-8 lg:p-12">
             <div class="w-full max-w-md">
 
                 {{-- Mobile logo (shown only on small screens) --}}
-                <div class="lg:hidden flex items-center justify-center gap-3 mb-8">
+                <div class="lg:hidden flex items-center justify-center gap-3 mb-6">
                     <svg class="w-9 h-9" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="4" y="6" width="8" height="28" rx="2" fill="#ea580c" opacity="0.9"/>
                         <rect x="14" y="4" width="8" height="32" rx="2" fill="#ea580c"/>
@@ -93,7 +93,7 @@
                 </div>
 
                 {{-- Form Card --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 sm:p-10">
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-10">
                     {{-- Desktop logo inside card --}}
                     <div class="hidden lg:flex items-center justify-center gap-2.5 mb-6">
                         <svg class="w-8 h-8" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -132,18 +132,27 @@
                         </div>
                     @endif
 
-                    {{-- Demo Admin Info --}}
-                    <!-- HAPUS DARI SINI JIKA INGIN MENGHAPUS INFO DEMO LOGIN -->
+                    {{-- Demo Admin Info & Autofill --}}
+                    <!-- [MULAI KODE DEMO ADMIN - BISA DIHAPUS JIKA TIDAK DIGUNAKAN] -->
                     <div class="mb-6 p-4 rounded-xl bg-orange-50 border border-orange-200 text-orange-900 text-xs">
-                        <div class="font-bold text-orange-700 mb-1 text-sm flex items-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Akun Demo Admin:
+                        <div class="flex items-center justify-between mb-1.5">
+                            <div class="font-bold text-orange-700 text-sm flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Akun Demo Admin:
+                            </div>
+                            <button 
+                                type="button" 
+                                onclick="document.getElementById('email').value='admin@gmail.com'; document.getElementById('password').value='password';"
+                                class="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg text-[11px] transition"
+                            >
+                                Isi Otomatis
+                            </button>
                         </div>
                         <div class="font-mono text-stone-800">
                             Email: <strong class="text-stone-900">admin@gmail.com</strong> | Password: <strong class="text-stone-900">password</strong>
                         </div>
                     </div>
-                    <!-- SAMPAI SINI -->
+                    <!-- [AKHIR KODE DEMO ADMIN] -->
 
                     <form method="POST" action="{{ route('login') }}" class="space-y-5">
                         @csrf
@@ -163,7 +172,7 @@
                                     id="email"
                                     name="email"
                                     type="email"
-                                    value="{{ old('email') }}"
+                                    value="{{ old('email', 'admin@gmail.com') }}"
                                     required
                                     autofocus
                                     autocomplete="email"
@@ -188,6 +197,7 @@
                                     id="password"
                                     name="password"
                                     :type="showPassword ? 'text' : 'password'"
+                                    value="password"
                                     required
                                     autocomplete="current-password"
                                     placeholder="Masukkan password"

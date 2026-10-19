@@ -5,26 +5,26 @@
         <p class="text-stone-500 text-sm mt-1">Cari dan temukan buku yang tersedia di perpustakaan.</p>
     </div>
 
-    {{-- Panel Pencarian & Filter (mengikuti gaya panel putih rounded-xl + shadow pada desain referensi) --}}
-    <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-4 mb-6">
-        <form method="GET" action="{{ route('member.catalog.index') }}" class="flex flex-col sm:flex-row gap-3">
+    {{-- Panel Pencarian & Filter --}}
+    <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-3.5 sm:p-4 mb-6">
+        <form method="GET" action="{{ route('member.catalog.index') }}" class="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
             <div class="relative flex-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
                 </svg>
                 <input type="text" name="q" value="{{ $search }}" placeholder="Cari judul, penulis, atau ISBN..."
-                       class="w-full h-11 pl-9 pr-3 rounded-lg bg-stone-50 border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 focus:bg-white transition-colors">
+                       class="w-full h-11 pl-10 pr-3 rounded-xl bg-stone-50 border border-stone-200 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 focus:bg-white transition-colors">
             </div>
 
             <select name="category" onchange="this.form.submit()"
-                    class="h-11 rounded-lg bg-stone-50 border border-stone-200 text-sm text-stone-700 px-3 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 cursor-pointer">
+                    class="h-11 rounded-xl bg-stone-50 border border-stone-200 text-sm text-stone-700 px-3.5 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600 cursor-pointer">
                 <option value="">Semua Kategori</option>
                 @foreach ($categories as $category)
                     <option value="{{ $category }}" @selected($activeCategory === $category)>{{ $category }}</option>
                 @endforeach
             </select>
 
-            <button type="submit" class="h-11 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-5 rounded-lg shadow-sm transition-colors">
+            <button type="submit" class="h-11 bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold px-6 rounded-xl shadow-sm transition-colors w-full sm:w-auto">
                 Cari
             </button>
         </form>
@@ -32,14 +32,14 @@
 
     @if ($books->isEmpty())
         {{-- Empty State --}}
-        <div class="bg-white rounded-xl border border-stone-200 py-16 text-center">
+        <div class="bg-white rounded-2xl border border-stone-200 py-16 text-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-10 w-10 text-stone-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
             </svg>
             <p class="text-stone-500 text-sm">Tidak ada buku yang cocok dengan pencarianmu.</p>
         </div>
     @else
-        {{-- Ringkasan jumlah hasil (data dari paginator yang sudah ada, tanpa logika baru) --}}
+        {{-- Ringkasan jumlah hasil --}}
         <div class="flex items-center justify-between mb-4 px-1">
             <p class="text-xs text-stone-500">
                 Menampilkan <span class="font-semibold text-stone-700">{{ $books->firstItem() }}–{{ $books->lastItem() }}</span>
@@ -48,7 +48,7 @@
         </div>
 
         {{-- Grid Katalog --}}
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4">
             @foreach ($books as $book)
                 @php
                     $statusMap = [

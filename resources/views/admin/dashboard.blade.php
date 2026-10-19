@@ -1,107 +1,107 @@
 <x-layouts.admin title="Dashboard Admin — Libriq.id">
     {{-- Admin Profile & Welcome Banner --}}
-    <div class="mb-8 bg-white border border-stone-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div class="flex items-center gap-4">
+    <div class="mb-6 sm:mb-8 bg-white border border-stone-200 rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+        <div class="flex items-center gap-3 sm:gap-4">
             <div class="relative shrink-0">
-                <img src="{{ auth()->user()?->avatar_url }}" alt="Avatar {{ auth()->user()?->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-orange-500 shadow-sm">
-                <span class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" title="Admin Aktif"></span>
+                <img src="{{ auth()->user()?->avatar_url }}" alt="Avatar {{ auth()->user()?->name }}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-orange-500 shadow-sm">
+                <span class="absolute bottom-0 right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-emerald-500 border-2 border-white rounded-full" title="Admin Aktif"></span>
             </div>
-            <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="text-xl sm:text-2xl font-bold font-heading text-stone-900">Halo, {{ auth()->user()?->name }} 👋</h1>
-                    <span class="px-2.5 py-0.5 bg-orange-100 text-orange-800 text-xs font-semibold rounded-full">Administrator</span>
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h1 class="text-lg sm:text-2xl font-bold font-heading text-stone-900 truncate">Halo, {{ auth()->user()?->name }} 👋</h1>
+                    <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-[10px] sm:text-xs font-semibold rounded-full shrink-0">Administrator</span>
                 </div>
-                <p class="text-stone-500 text-sm mt-0.5">Ringkasan aktivitas sirkulasi dan inventaris perpustakaan Libriq.id hari ini.</p>
+                <p class="text-stone-500 text-xs sm:text-sm mt-0.5 leading-relaxed">Ringkasan aktivitas sirkulasi dan inventaris perpustakaan Libriq.id hari ini.</p>
             </div>
         </div>
 
-        <div class="flex items-center gap-3 shrink-0">
-            <a href="{{ route('admin.profile.edit') }}" class="px-4 py-2.5 bg-stone-50 border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 hover:text-stone-900 transition-colors flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 shrink-0">
+            <a href="{{ route('admin.profile.edit') }}" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-stone-50 border border-stone-200 text-stone-700 rounded-xl text-xs sm:text-sm font-medium hover:bg-stone-100 hover:text-stone-900 transition-colors flex items-center justify-center gap-2">
                 <svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                Ubah Foto / Profil
+                Ubah Profil
             </a>
-            <a href="{{ route('admin.books.create') }}" class="px-4 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('admin.books.create') }}" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-orange-600 text-white rounded-xl text-xs sm:text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm flex items-center justify-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah Buku
             </a>
         </div>
     </div>
 
-    {{-- Stats Grid --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    {{-- Stats Grid (2 columns on mobile, 4 on desktop) --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         {{-- Card 1: Total Koleksi --}}
-        <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm relative overflow-hidden group">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <p class="text-sm font-medium text-stone-500 mb-1">Total Koleksi</p>
-                    <h3 class="text-3xl font-bold font-heading text-stone-900">{{ number_format($totalBooks) }}</h3>
+        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-stone-200 shadow-sm relative overflow-hidden group">
+            <div class="flex justify-between items-start mb-2 sm:mb-4">
+                <div class="min-w-0">
+                    <p class="text-xs sm:text-sm font-medium text-stone-500 mb-0.5 sm:mb-1">Total Koleksi</p>
+                    <h3 class="text-xl sm:text-3xl font-bold font-heading text-stone-900">{{ number_format($totalBooks) }}</h3>
                 </div>
-                <div class="p-2.5 bg-orange-50 rounded-xl text-orange-600 group-hover:scale-110 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                <div class="p-2 sm:p-2.5 bg-orange-50 rounded-xl text-orange-600 shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                 </div>
             </div>
-            <div class="flex items-center text-sm">
-                <span class="text-stone-500">
-                    Stok habis: <strong class="text-red-600">{{ $outOfStockBooks }}</strong> | Terbatas: <strong class="text-amber-600">{{ $limitedBooks }}</strong>
+            <div class="flex items-center text-[11px] sm:text-sm">
+                <span class="text-stone-500 truncate">
+                    Habis: <strong class="text-red-600">{{ $outOfStockBooks }}</strong> | Sisa: <strong class="text-amber-600">{{ $limitedBooks }}</strong>
                 </span>
             </div>
-            <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-orange-50 rounded-full opacity-50 pointer-events-none"></div>
+            <div class="absolute -bottom-6 -right-6 w-20 h-20 sm:w-24 sm:h-24 bg-orange-50 rounded-full opacity-50 pointer-events-none"></div>
         </div>
 
         {{-- Card 2: Dipinjam & Pending --}}
-        <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm relative overflow-hidden group">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <p class="text-sm font-medium text-stone-500 mb-1">Sedang Dipinjam</p>
-                    <h3 class="text-3xl font-bold font-heading text-stone-900">{{ number_format($totalBorrowed) }}</h3>
+        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-stone-200 shadow-sm relative overflow-hidden group">
+            <div class="flex justify-between items-start mb-2 sm:mb-4">
+                <div class="min-w-0">
+                    <p class="text-xs sm:text-sm font-medium text-stone-500 mb-0.5 sm:mb-1">Dipinjam</p>
+                    <h3 class="text-xl sm:text-3xl font-bold font-heading text-stone-900">{{ number_format($totalBorrowed) }}</h3>
                 </div>
-                <div class="p-2.5 bg-blue-50 rounded-xl text-blue-600 group-hover:scale-110 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                <div class="p-2 sm:p-2.5 bg-blue-50 rounded-xl text-blue-600 shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                 </div>
             </div>
-            <div class="flex items-center text-sm">
-                <a href="{{ route('admin.loans.pending') }}" class="text-amber-600 hover:underline font-medium flex items-center gap-1">
-                    {{ $totalPending }} Menunggu Persetujuan &rarr;
+            <div class="flex items-center text-[11px] sm:text-sm">
+                <a href="{{ route('admin.loans.pending') }}" class="text-amber-600 hover:underline font-semibold flex items-center gap-1 truncate">
+                    {{ $totalPending }} Menunggu &rarr;
                 </a>
             </div>
         </div>
 
         {{-- Card 3: Terlambat --}}
-        <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm relative overflow-hidden group">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <p class="text-sm font-medium text-stone-500 mb-1">Buku Terlambat</p>
-                    <h3 class="text-3xl font-bold font-heading text-stone-900">{{ number_format($totalOverdue) }}</h3>
+        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-stone-200 shadow-sm relative overflow-hidden group">
+            <div class="flex justify-between items-start mb-2 sm:mb-4">
+                <div class="min-w-0">
+                    <p class="text-xs sm:text-sm font-medium text-stone-500 mb-0.5 sm:mb-1">Terlambat</p>
+                    <h3 class="text-xl sm:text-3xl font-bold font-heading text-stone-900">{{ number_format($totalOverdue) }}</h3>
                 </div>
-                <div class="p-2.5 bg-red-50 rounded-xl text-red-600 group-hover:scale-110 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="p-2 sm:p-2.5 bg-red-50 rounded-xl text-red-600 shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <div class="flex items-center text-sm">
+            <div class="flex items-center text-[11px] sm:text-sm">
                 @if($totalOverdue > 0)
-                    <span class="text-red-600 font-medium flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span class="text-red-600 font-semibold flex items-center gap-1 truncate">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         Butuh tindak lanjut
                     </span>
                 @else
-                    <span class="text-emerald-600 font-medium">Tidak ada overdue</span>
+                    <span class="text-emerald-600 font-medium truncate">Aman terkendali</span>
                 @endif
             </div>
         </div>
 
         {{-- Card 4: Denda Belum Dibayar / Anggota --}}
-        <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm relative overflow-hidden group">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <p class="text-sm font-medium text-stone-500 mb-1">Denda Belum Dibayar</p>
-                    <h3 class="text-3xl font-bold font-heading text-stone-900">Rp {{ number_format($totalUnpaidFine, 0, ',', '.') }}</h3>
+        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-stone-200 shadow-sm relative overflow-hidden group">
+            <div class="flex justify-between items-start mb-2 sm:mb-4">
+                <div class="min-w-0">
+                    <p class="text-xs sm:text-sm font-medium text-stone-500 mb-0.5 sm:mb-1">Denda Belum Bayar</p>
+                    <h3 class="text-base sm:text-2xl font-bold font-heading text-stone-900 truncate">Rp {{ number_format($totalUnpaidFine, 0, ',', '.') }}</h3>
                 </div>
-                <div class="p-2.5 bg-emerald-50 rounded-xl text-emerald-600 group-hover:scale-110 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="p-2 sm:p-2.5 bg-emerald-50 rounded-xl text-emerald-600 shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <div class="flex items-center text-sm">
-                <span class="text-stone-500">Total Anggota: <strong>{{ number_format($totalMembers) }}</strong></span>
+            <div class="flex items-center text-[11px] sm:text-sm">
+                <span class="text-stone-500 truncate">Total Anggota: <strong>{{ number_format($totalMembers) }}</strong></span>
             </div>
         </div>
     </div>

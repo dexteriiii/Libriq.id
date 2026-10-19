@@ -21,7 +21,7 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 sm:p-8 max-w-2xl">
+    <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-4 sm:p-8 max-w-2xl">
         <form method="POST" action="{{ route('member.profile.update') }}" enctype="multipart/form-data" 
               x-data="{ 
                   previewUrl: '{{ $user->avatar_url }}',
@@ -101,11 +101,11 @@
                 </div>
             </div>
 
-            <div class="flex justify-end gap-3 border-t border-stone-200 pt-6">
-                <a href="{{ route('member.dashboard') }}" class="px-5 py-2.5 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-50 transition-colors">
+            <div class="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 border-t border-stone-200 pt-6">
+                <a href="{{ route('member.dashboard') }}" class="w-full sm:w-auto text-center px-5 py-2.5 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-50 transition-colors">
                     Batal
                 </a>
-                <button type="submit" class="px-6 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm">
+                <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-semibold hover:bg-orange-700 transition-colors shadow-sm">
                     Simpan Profil
                 </button>
             </div>
