@@ -224,9 +224,39 @@
         </div>
     @endif
 
+    {{-- QUICK VERIFICATION BOX --}}
+    <div class="mb-8 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-emerald-500/10 border border-amber-200/80 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="max-w-xl">
+                <div class="flex items-center gap-2 text-amber-700 font-semibold text-xs tracking-wider uppercase mb-1">
+                    <span class="p-1 bg-amber-500 text-white rounded-md">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </span>
+                    Verifikasi Peminjaman Buku
+                </div>
+                <h2 class="text-xl font-bold font-heading text-stone-900">Cocokkan 5 Kode Angka dari Anggota</h2>
+                <p class="text-stone-600 text-sm mt-1">
+                    Minta anggota menunjukkan 5 digit kode verifikasi bukti pinjam mereka, lalu masukkan kode di samping untuk verifikasi dan serahkan buku secara instan.
+                </p>
+            </div>
+
+            <form method="POST" action="{{ route('admin.loans.verify-code') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                @csrf
+                <div>
+                    <input type="text" name="code" placeholder="Cth: 62517" maxlength="5" pattern="[0-9]{5}" required
+                           class="w-full sm:w-44 text-center font-mono text-xl tracking-widest font-black py-2.5 px-4 bg-white border-2 border-amber-300 rounded-xl focus:outline-none focus:border-amber-600 focus:ring-4 focus:ring-amber-500/20 text-stone-900 placeholder:text-stone-300 shadow-xs" autocomplete="off">
+                </div>
+                <button type="submit" class="px-5 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Cocokkan & Serahkan
+                </button>
+            </form>
+        </div>
+    </div>
+
     {{-- 4. PERMINTAAN PEMINJAMAN BARU --}}
-    <div class="mb-3">
-        <h2 class="text-lg font-bold font-heading text-stone-900">Permintaan Peminjaman Baru</h2>
+    <div class="mb-3 flex items-center justify-between">
+        <h2 class="text-lg font-bold font-heading text-stone-900">Permintaan Peminjaman Baru ({{ $loans->total() }})</h2>
     </div>
 
     <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
@@ -236,9 +266,10 @@
                     <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
                         <th class="px-6 py-4 font-semibold">Pemohon</th>
                         <th class="px-6 py-4 font-semibold">Buku</th>
+                        <th class="px-6 py-4 font-semibold">Kode Bukti</th>
                         <th class="px-6 py-4 font-semibold">Stok Tersedia</th>
                         <th class="px-6 py-4 font-semibold">Waktu Pengajuan</th>
-                        <th class="px-6 py-4 font-semibold text-right">Aksi Fulfillment</th>
+                        <th class="px-6 py-4 font-semibold text-right">Aksi Verifikasi & Penyerahan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-200 text-sm">
@@ -253,6 +284,15 @@
                                 <div class="text-stone-900 font-medium line-clamp-1">{{ $loan->book?->title }}</div>
                                 <div class="text-stone-500 text-xs font-mono">ISBN: {{ $loan->book?->isbn }}</div>
                                 <div class="text-stone-500 text-xs font-mono">Rak: {{ $loan->book?->rack_location ?? '-' }}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                @if($loan->verification_code)
+                                    <span class="inline-flex items-center font-mono font-black text-sm px-2.5 py-1 bg-amber-100 text-amber-900 rounded-lg border border-amber-300 tracking-widest shadow-xs">
+                                        {{ $loan->verification_code }}
+                                    </span>
+                                @else
+                                    <span class="text-stone-400 text-xs">-</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 @if($loan->book?->available_stock > 2)
@@ -275,16 +315,20 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <form method="POST" action="{{ route('admin.loans.approve', $loan) }}">
+                                    <form method="POST" action="{{ route('admin.loans.approve', $loan) }}" class="flex items-center gap-1.5">
                                         @csrf
-                                        <button type="submit" @if($loan->book?->available_stock <= 0) disabled @endif class="px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors shadow-sm disabled:opacity-50">
-                                            Setujui & Serahkan
+                                        @if($loan->verification_code)
+                                            <input type="text" name="verification_code" placeholder="Ketik kode" maxlength="5" pattern="[0-9]{5}" required
+                                                   class="w-24 px-2.5 py-1.5 text-xs font-mono text-center border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-xs" title="Masukkan 5 digit kode verifikasi anggota">
+                                        @endif
+                                        <button type="submit" @if($loan->book?->available_stock <= 0) disabled @endif class="px-3.5 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors shadow-sm disabled:opacity-50 whitespace-nowrap">
+                                            Cocokkan & Serahkan
                                         </button>
                                     </form>
 
-                                    <form method="POST" action="{{ route('admin.loans.reject', $loan) }}">
+                                    <form method="POST" action="{{ route('admin.loans.reject', $loan) }}" onsubmit="return confirm('Tolak permohonan peminjaman ini?');">
                                         @csrf
-                                        <button type="submit" class="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-semibold hover:bg-red-200 transition-colors">
+                                        <button type="submit" class="px-2.5 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-semibold hover:bg-red-200 transition-colors">
                                             Tolak
                                         </button>
                                     </form>
@@ -293,7 +337,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-stone-500">
+                            <td colspan="6" class="px-6 py-12 text-center text-stone-500">
                                 Saat ini tidak ada permintaan peminjaman baru yang berstatus pending.
                             </td>
                         </tr>

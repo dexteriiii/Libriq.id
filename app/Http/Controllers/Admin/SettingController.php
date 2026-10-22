@@ -13,7 +13,7 @@ class SettingController extends Controller
     private const SETTINGS = [
         'loan_duration_days' => ['required', 'integer', 'min:1', 'max:365'],
         'fine_per_day'       => ['required', 'integer', 'min:0'],
-        'max_active_loans'   => ['required', 'integer', 'min:1', 'max:50'],
+        'max_active_loans'   => ['required', 'integer', 'min:0', 'max:100'],
         'max_unpaid_fine'    => ['required', 'integer', 'min:0'],
     ];
 

@@ -27,6 +27,18 @@
         </div>
     </div>
 
+    {{-- Flash Messages --}}
+    @if (session('success'))
+        <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center justify-between shadow-xs">
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm flex items-center justify-between shadow-xs">
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
     {{-- Stats Grid (2 columns on mobile, 4 on desktop) --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         {{-- Card 1: Total Koleksi --}}
@@ -110,18 +122,44 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {{-- Pending Approvals Table --}}
         <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-            <div class="px-6 py-5 border-b border-stone-200 flex justify-between items-center bg-stone-50/50">
-                <h3 class="text-lg font-bold font-heading text-stone-900">Permintaan Menunggu Persetujuan</h3>
-                <a href="{{ route('admin.loans.pending') }}" class="text-sm font-medium text-orange-600 hover:text-orange-700">Lihat Semua</a>
+            <div class="px-6 py-5 border-b border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-stone-50/50">
+                <div>
+                    <h3 class="text-lg font-bold font-heading text-stone-900">Permintaan Menunggu Persetujuan</h3>
+                    <p class="text-xs text-stone-500 mt-0.5">Cocokkan 5 kode angka dari anggota sebelum menyerahkan buku.</p>
+                </div>
+                <a href="{{ route('admin.loans.pending') }}" class="text-xs sm:text-sm font-semibold text-orange-600 hover:text-orange-700 self-start sm:self-auto">
+                    Lihat Semua &rarr;
+                </a>
             </div>
+
+            {{-- Quick Code Match Bar --}}
+            <div class="px-6 py-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 border-b border-amber-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2 text-xs font-semibold text-amber-900">
+                    <span class="p-1 bg-amber-500 text-white rounded-md">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </span>
+                    <span>Verifikasi Cepat Kode Anggota:</span>
+                </div>
+                <form method="POST" action="{{ route('admin.loans.verify-code') }}" class="flex items-center gap-2">
+                    @csrf
+                    <input type="text" name="code" placeholder="5 Digit (cth: 62517)" maxlength="5" pattern="[0-9]{5}" required
+                           class="w-36 px-3 py-1.5 text-xs font-mono font-bold text-center bg-white border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 shadow-2xs placeholder:font-sans placeholder:font-normal placeholder:text-stone-400" autocomplete="off">
+                    <button type="submit" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold transition-colors shadow-2xs whitespace-nowrap flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Cocokkan
+                    </button>
+                </form>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-stone-50 text-stone-500 text-xs uppercase tracking-wider">
                             <th class="px-6 py-3 font-medium">Peminjam</th>
                             <th class="px-6 py-3 font-medium">Buku</th>
+                            <th class="px-6 py-3 font-medium">Kode Bukti</th>
                             <th class="px-6 py-3 font-medium">Tanggal Ajuan</th>
-                            <th class="px-6 py-3 font-medium text-right">Aksi</th>
+                            <th class="px-6 py-3 font-medium text-right">Aksi Verifikasi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-stone-200 text-sm">
@@ -135,20 +173,33 @@
                                     <div class="text-stone-900 line-clamp-1 font-medium">{{ $loan->book?->title }}</div>
                                     <div class="text-stone-500 text-xs font-mono">ISBN: {{ $loan->book?->isbn }}</div>
                                 </td>
-                                <td class="px-6 py-4 text-stone-500">
+                                <td class="px-6 py-4">
+                                    @if($loan->verification_code)
+                                        <span class="inline-flex items-center font-mono font-black text-xs px-2.5 py-1 bg-amber-100 text-amber-900 rounded-lg border border-amber-300 tracking-wider shadow-2xs">
+                                            {{ $loan->verification_code }}
+                                        </span>
+                                    @else
+                                        <span class="text-stone-400 text-xs">-</span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-stone-500 text-xs">
                                     {{ $loan->created_at->diffForHumans() }}
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <form method="POST" action="{{ route('admin.loans.approve', $loan) }}">
+                                        <form method="POST" action="{{ route('admin.loans.approve', $loan) }}" class="flex items-center gap-1.5">
                                             @csrf
-                                            <button type="submit" class="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-medium hover:bg-emerald-700 transition-colors">
-                                                Setujui
+                                            @if($loan->verification_code)
+                                                <input type="text" name="verification_code" placeholder="Ketik kode" maxlength="5" pattern="[0-9]{5}" required
+                                                       class="w-24 px-2 py-1 text-xs font-mono text-center border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-2xs" title="Masukkan 5 digit kode verifikasi anggota">
+                                            @endif
+                                            <button type="submit" @if($loan->book?->available_stock <= 0) disabled @endif class="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors shadow-2xs disabled:opacity-50 whitespace-nowrap">
+                                                Cocokkan & Setujui
                                             </button>
                                         </form>
-                                        <form method="POST" action="{{ route('admin.loans.reject', $loan) }}">
+                                        <form method="POST" action="{{ route('admin.loans.reject', $loan) }}" onsubmit="return confirm('Tolak permohonan peminjaman ini?');">
                                             @csrf
-                                            <button type="submit" class="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors">
+                                            <button type="submit" class="px-2.5 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors">
                                                 Tolak
                                             </button>
                                         </form>
@@ -157,7 +208,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-8 text-center text-stone-500">
+                                <td colspan="5" class="px-6 py-8 text-center text-stone-500">
                                     Tidak ada permintaan peminjaman pending saat ini.
                                 </td>
                             </tr>

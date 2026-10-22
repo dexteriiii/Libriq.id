@@ -67,10 +67,15 @@ class LoginController extends Controller
     {
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'nis'      => ['required', 'string', 'size:5', 'regex:/^[0-9]{5}$/', 'unique:users,nis'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
         ], [
             'name.required'       => 'Nama lengkap wajib diisi.',
+            'nis.required'        => 'NIS (Nomor Induk Siswa) wajib diisi.',
+            'nis.size'            => 'NIS harus tepat 5 digit angka.',
+            'nis.regex'           => 'NIS hanya boleh berisi angka (5 digit).',
+            'nis.unique'          => 'NIS ini sudah terdaftar.',
             'email.required'      => 'Email wajib diisi.',
             'email.email'         => 'Format email tidak valid.',
             'email.unique'        => 'Email sudah terdaftar.',
@@ -80,10 +85,12 @@ class LoginController extends Controller
         ]);
 
         $user = User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role'     => 'member', // Default role for new registrations
+            'name'      => $validated['name'],
+            'nis'       => $validated['nis'],
+            'member_id' => $validated['nis'],
+            'email'     => $validated['email'],
+            'password'  => Hash::make($validated['password']),
+            'role'      => 'member', // Default role for new registrations
         ]);
 
         // Jangan otomatis login, arahkan kembali ke halaman login dengan pesan sukses

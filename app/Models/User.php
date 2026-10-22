@@ -16,6 +16,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'nis',
         'password',
         'role',
         'member_id',
@@ -57,18 +58,28 @@ class User extends Authenticatable
     public function hasOverdueLoans(): bool
     {
         return $this->loans()
-            ->whereIn('status', ['borrowed', 'overdue'])
-            ->whereNotNull('due_date')
-            ->whereDate('due_date', '<', Carbon::today())
+            ->where(function ($q) {
+                $q->where('status', 'overdue')
+                  ->orWhere(function ($sq) {
+                      $sq->where('status', 'borrowed')
+                         ->whereNotNull('due_date')
+                         ->whereDate('due_date', '<', Carbon::today());
+                  });
+            })
             ->exists();
     }
 
     public function overdueLoansCount(): int
     {
         return $this->loans()
-            ->whereIn('status', ['borrowed', 'overdue'])
-            ->whereNotNull('due_date')
-            ->whereDate('due_date', '<', Carbon::today())
+            ->where(function ($q) {
+                $q->where('status', 'overdue')
+                  ->orWhere(function ($sq) {
+                      $sq->where('status', 'borrowed')
+                         ->whereNotNull('due_date')
+                         ->whereDate('due_date', '<', Carbon::today());
+                  });
+            })
             ->count();
     }
 
@@ -86,13 +97,14 @@ class User extends Authenticatable
             ->where('fine_amount', '>', 0)
             ->sum('fine_amount');
 
-        // 2. Denda berjalan dari buku aktif yang sedang terlambat
+        // 2. Denda berjalan dari buku aktif yang sedang terlambat & belum dibayar
         $finePerDay = (int) Setting::get('fine_per_day', 2000);
         $today = Carbon::today();
         $runningFines = 0;
 
         $overdueLoans = $this->loans()
             ->whereIn('status', ['borrowed', 'overdue'])
+            ->whereNull('fine_paid_at')
             ->whereNotNull('due_date')
             ->whereDate('due_date', '<', $today)
             ->get();

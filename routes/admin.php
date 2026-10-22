@@ -44,9 +44,10 @@ Route::middleware(['auth', 'role:admin'])
 
         // ── Loans / Circulation ───────────────────────────────────────────
         Route::prefix('loans')->name('loans.')->group(function () {
-            Route::get('/',                    [LoanController::class, 'index'])->name('index');
-            Route::get('/pending',             [LoanController::class, 'pending'])->name('pending');
-            Route::get('/{loan}',              [LoanController::class, 'show'])->name('show');
+            Route::get('/',                      [LoanController::class, 'index'])->name('index');
+            Route::get('/pending',               [LoanController::class, 'pending'])->name('pending');
+            Route::post('/verify-code',          [LoanController::class, 'verifyCode'])->name('verify-code');
+            Route::get('/{loan}',                [LoanController::class, 'show'])->name('show');
             Route::post('/{loan}/approve',       [LoanController::class, 'approve'])->name('approve');
             Route::post('/{loan}/reject',        [LoanController::class, 'reject'])->name('reject');
             Route::post('/{loan}/renew-approve', [LoanController::class, 'approveRenewal'])->name('renew-approve');

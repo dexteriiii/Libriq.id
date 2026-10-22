@@ -21,6 +21,9 @@
             <div>
                 <h3 class="font-bold text-stone-900">{{ $user->name }}</h3>
                 <p class="text-xs text-stone-500">{{ $user->email }}</p>
+                @if($user->nis)
+                    <p class="text-xs text-stone-600 font-mono font-medium mt-0.5">NIS: {{ $user->nis }}</p>
+                @endif
                 <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold {{ $user->isAdmin() ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800' }}">
                     {{ ucfirst($user->role) }}
                 </span>

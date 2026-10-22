@@ -43,8 +43,17 @@ class CatalogController extends Controller
 
     public function show(Book $book)
     {
+        $user = auth()->user();
+
+        // Cek apakah user sudah punya permintaan aktif untuk buku ini
+        $alreadyRequested = $user->loans()
+            ->where('book_id', $book->id)
+            ->whereIn('status', ['pending', 'borrowed', 'overdue'])
+            ->first();
+
         return view('member.catalog.show', [
-            'book' => $book,
+            'book'             => $book,
+            'alreadyRequested' => $alreadyRequested,
         ]);
     }
 }

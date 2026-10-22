@@ -249,12 +249,91 @@
         </div>
     </nav>
 
-    {{-- Footer (Desktop only or below content) --}}
+    {{-- Footer (Desktop only — hidden on mobile karena ada bottom nav) --}}
     <footer class="bg-white border-t border-stone-200 mt-auto hidden md:block">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <p class="text-center text-sm text-stone-500">
-                &copy; {{ date('Y') }} Libriq.id. Sistem Manajemen Perpustakaan Digital.
-            </p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                {{-- Kolom 1: Identitas --}}
+                <div>
+                    <div class="flex items-center gap-2.5 mb-3">
+                        <svg class="w-7 h-7" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="6" width="8" height="28" rx="2" fill="#ea580c" opacity="0.9"/>
+                            <rect x="14" y="4" width="8" height="32" rx="2" fill="#ea580c"/>
+                            <rect x="24" y="8" width="8" height="26" rx="2" fill="#ea580c" opacity="0.8"/>
+                            <path d="M34 8 L38 6 L38 34 L34 32Z" fill="#ea580c" opacity="0.6"/>
+                        </svg>
+                        <span class="text-lg font-bold font-heading text-stone-900">Libriq<span class="text-orange-600">.id</span></span>
+                    </div>
+                    <p class="text-sm text-stone-500 leading-relaxed">
+                        Sistem Manajemen Perpustakaan Digital yang terintegrasi dengan
+                        <span class="font-semibold text-stone-700">SMKN 5 Surakarta</span>.
+                    </p>
+                    <a href="https://maps.app.goo.gl/d6rR2WLc4GxufuMn7" target="_blank" rel="noopener noreferrer"
+                       class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 rounded-full text-xs font-semibold text-orange-700 hover:bg-orange-100 hover:border-orange-400 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        SMKN 5 Surakarta
+                        <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                </div>
+
+                {{-- Kolom 2: Jam Pelayanan --}}
+                <div>
+                    <h4 class="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Jam Pelayanan
+                    </h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center justify-between py-1.5 border-b border-stone-100">
+                            <span class="text-stone-600 font-medium">Senin – Kamis</span>
+                            <span class="font-mono font-bold text-stone-800 bg-stone-50 px-2 py-0.5 rounded-lg text-xs">07.00 – 15.00</span>
+                        </li>
+                        <li class="flex items-center justify-between py-1.5 border-b border-stone-100">
+                            <span class="text-stone-600 font-medium">Jumat</span>
+                            <span class="font-mono font-bold text-stone-800 bg-stone-50 px-2 py-0.5 rounded-lg text-xs">07.00 – 14.00</span>
+                        </li>
+                        <li class="flex items-center justify-between py-1.5">
+                            <span class="text-stone-400 font-medium">Sabtu – Minggu</span>
+                            <span class="font-mono font-bold text-red-400 bg-red-50 px-2 py-0.5 rounded-lg text-xs">Tutup</span>
+                        </li>
+                    </ul>
+                </div>
+
+                {{-- Kolom 3: Informasi & Ketentuan --}}
+                <div>
+                    <h4 class="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Ketentuan Peminjaman
+                    </h4>
+                    <ul class="space-y-1.5 text-xs text-stone-500">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-3.5 h-3.5 text-orange-400 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            Tunjukkan kode verifikasi 5 digit ke petugas perpustakaan saat mengambil buku.
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-3.5 h-3.5 text-orange-400 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            Keterlambatan pengembalian dikenakan denda harian sesuai kebijakan sekolah.
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-3.5 h-3.5 text-orange-400 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            Anggota dengan denda belum lunas tidak dapat mengajukan peminjaman baru.
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-3.5 h-3.5 text-orange-400 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            Perpanjangan peminjaman dapat diajukan melalui menu "Peminjaman Saya".
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {{-- Bottom Bar --}}
+            <div class="mt-8 pt-6 border-t border-stone-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-stone-400">
+                <p>&copy; {{ date('Y') }} <span class="font-semibold text-stone-500">Libriq.id</span> — Terintegrasi dengan <a href="https://maps.app.goo.gl/d6rR2WLc4GxufuMn7" target="_blank" rel="noopener noreferrer" class="font-semibold text-stone-500 hover:text-orange-600 transition-colors underline underline-offset-2">SMKN 5 Surakarta</a>.</p>
+                <p class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    Sistem Manajemen Perpustakaan Digital
+                </p>
+            </div>
         </div>
     </footer>
 </body>

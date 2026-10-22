@@ -66,13 +66,66 @@ class LoanController extends Controller
         return view('admin.loans.pending', compact('loans', 'renewals', 'returns', 'finePayments'));
     }
 
-    // ─── Approve ─────────────────────────────────────────────────────────────
+    // ─── Approve (Cocokkan Kode & Setujui) ────────────────────────────────────
 
-    public function approve(Loan $loan): RedirectResponse
+    public function approve(Request $request, Loan $loan): RedirectResponse
     {
+        // Periksa apakah borrower punya denda belum lunas atau buku overdue
+        if (! $loan->borrower?->canBorrowBooks()) {
+            return back()->with('error', "Peminjaman tidak dapat disetujui: " . $loan->borrower?->getBorrowBlockReason());
+        }
+
+        // Jika peminjaman memiliki kode verifikasi, cocokkan dengan input admin
+        if ($loan->verification_code) {
+            $request->validate([
+                'verification_code' => ['required', 'string'],
+            ], [
+                'verification_code.required' => 'Kode verifikasi 5 angka dari anggota wajib dimasukkan.',
+            ]);
+
+            if (trim($request->input('verification_code')) !== trim($loan->verification_code)) {
+                return back()->with('error', "Kode verifikasi salah! Kode '{$request->input('verification_code')}' tidak cocok dengan bukti peminjaman ini.");
+            }
+        }
+
         $this->loanService->approveLoan($loan);
 
-        return back()->with('success', "Peminjaman #{$loan->id} disetujui. Stok berkurang 1 eksemplar.");
+        return back()->with('success', "Peminjaman #{$loan->id} berhasil diverifikasi dan disetujui. Buku dapat diserahkan ke {$loan->borrower?->name}.");
+    }
+
+    // ─── Direct Verify by Code (Input Cepat Kode Anggota) ──────────────────────
+
+    public function verifyCode(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'code' => ['required', 'string'],
+        ], [
+            'code.required' => 'Silakan masukkan 5 digit kode verifikasi peminjaman.',
+        ]);
+
+        $code = trim($request->input('code'));
+
+        $loan = Loan::with(['borrower', 'book'])
+            ->where('status', 'pending')
+            ->where('verification_code', $code)
+            ->first();
+
+        if (! $loan) {
+            return back()->with('error', "Kode verifikasi '{$code}' tidak ditemukan atau status peminjaman sudah tidak pending.");
+        }
+
+        // Periksa apakah borrower punya denda belum lunas atau buku overdue
+        if (! $loan->borrower?->canBorrowBooks()) {
+            return back()->with('error', "Peminjaman untuk {$loan->borrower?->name} tidak dapat disetujui: " . $loan->borrower?->getBorrowBlockReason());
+        }
+
+        if ($loan->book?->available_stock <= 0) {
+            return back()->with('error', "Stok buku \"{$loan->book?->title}\" saat ini habis, peminjaman tidak dapat disetujui.");
+        }
+
+        $this->loanService->approveLoan($loan);
+
+        return back()->with('success', "Verifikasi Berhasil! Kode {$code} cocok untuk {$loan->borrower?->name}. Peminjaman buku \"{$loan->book?->title}\" telah disetujui dan buku siap diserahkan.");
     }
 
     // ─── Reject ───────────────────────────────────────────────────────────────

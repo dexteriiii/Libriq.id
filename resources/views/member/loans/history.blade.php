@@ -62,6 +62,13 @@
                                         <span class="w-1.5 h-1.5 rounded-full bg-{{ $badge['color'] }}-500"></span>
                                         {{ $badge['label'] }}
                                     </span>
+                                    @if ($loan->status === 'pending' && $loan->verification_code)
+                                        <div class="mt-2 p-2.5 bg-amber-50/90 border border-amber-200 rounded-xl shadow-xs">
+                                            <div class="text-[10px] uppercase font-bold text-amber-800 tracking-wider">Kode Verifikasi:</div>
+                                            <div class="font-mono text-lg font-black text-amber-900 tracking-widest my-0.5">{{ $loan->verification_code }}</div>
+                                            <div class="text-[10px] text-amber-700/80 leading-tight">Tunjukkan 5 kode ini ke admin</div>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-5 py-4 tabular-nums">
                                     @php
@@ -182,6 +189,13 @@
                                     {{ $badge['label'] }}
                                 </span>
                             </div>
+                            @if ($loan->status === 'pending' && $loan->verification_code)
+                                <div class="mt-2.5 p-2.5 bg-amber-50 rounded-xl border border-amber-200">
+                                    <span class="text-[10px] uppercase font-bold text-amber-800 tracking-wider block">Kode Verifikasi:</span>
+                                    <span class="font-mono text-xl font-black text-amber-900 tracking-widest block my-0.5">{{ $loan->verification_code }}</span>
+                                    <span class="text-[10px] text-amber-700/80 block">Tunjukkan kode ini ke admin</span>
+                                </div>
+                            @endif
                         </div>
                     </div>
 

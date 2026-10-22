@@ -24,6 +24,7 @@ class UserController extends Controller
             $query->where(function ($sq) use ($q) {
                 $sq->where('name', 'like', "%{$q}%")
                    ->orWhere('email', 'like', "%{$q}%")
+                   ->orWhere('nis', 'like', "%{$q}%")
                    ->orWhere('member_id', 'like', "%{$q}%");
             });
         }

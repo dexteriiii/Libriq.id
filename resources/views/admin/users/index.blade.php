@@ -25,7 +25,7 @@
     <div class="mb-6 bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
         <form method="GET" action="{{ route('admin.users.index') }}" class="flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1">
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Nama, Email, atau Member ID..." class="w-full pl-10 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Nama, Email, NIS, atau Member ID..." class="w-full pl-10 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
@@ -55,7 +55,7 @@
                 <thead>
                     <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
                         <th class="px-6 py-4 font-semibold">Pengguna</th>
-                        <th class="px-6 py-4 font-semibold">Role & Member ID</th>
+                        <th class="px-6 py-4 font-semibold">Role & NIS / ID</th>
                         <th class="px-6 py-4 font-semibold text-center">Pinjaman Aktif</th>
                         <th class="px-6 py-4 font-semibold">Terdaftar Pada</th>
                         <th class="px-6 py-4 font-semibold text-right">Aksi</th>
@@ -77,7 +77,13 @@
                                 <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $u->isAdmin() ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800' }}">
                                     {{ ucfirst($u->role) }}
                                 </span>
-                                <div class="text-stone-500 text-xs font-mono mt-1">{{ $u->member_id ?? '-' }}</div>
+                                @if($u->nis)
+                                    <div class="text-stone-700 text-xs font-mono font-medium mt-1">NIS: {{ $u->nis }}</div>
+                                @elseif($u->member_id)
+                                    <div class="text-stone-500 text-xs font-mono mt-1">{{ $u->member_id }}</div>
+                                @else
+                                    <div class="text-stone-400 text-xs mt-1">-</div>
+                                @endif
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <span class="font-bold {{ $u->active_loans_count > 0 ? 'text-amber-600' : 'text-stone-400' }}">

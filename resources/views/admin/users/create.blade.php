@@ -33,19 +33,23 @@
             <input type="email" name="email" value="{{ old('email') }}" required class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-stone-700 mb-1">Role / Peran <span class="text-red-500">*</span></label>
-                <select name="role" required class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white">
-                    <option value="member" {{ old('role') === 'member' ? 'selected' : '' }}>Member / Anggota</option>
-                    <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Administrator</option>
-                </select>
-            </div>
+        <div>
+            <label class="block text-sm font-medium text-stone-700 mb-1">NIS (Nomor Induk Siswa)</label>
+            <input type="text" name="nis" value="{{ old('nis') }}"
+                placeholder="5 digit angka, mis. 12345"
+                maxlength="5" pattern="[0-9]{5}"
+                inputmode="numeric"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 font-mono">
+            <p class="text-xs text-stone-400 mt-1">Harus tepat 5 digit angka.</p>
+        </div>
 
-            <div>
-                <label class="block text-sm font-medium text-stone-700 mb-1">Member ID (Opsional)</label>
-                <input type="text" name="member_id" value="{{ old('member_id') }}" placeholder="mis. M-2026-001" class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 font-mono">
-            </div>
+        <div>
+            <label class="block text-sm font-medium text-stone-700 mb-1">Role / Peran <span class="text-red-500">*</span></label>
+            <select name="role" required class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white">
+                <option value="member" {{ old('role', 'member') === 'member' ? 'selected' : '' }}>Member / Anggota</option>
+                <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Administrator</option>
+            </select>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-stone-200 pt-4">

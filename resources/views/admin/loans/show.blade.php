@@ -49,6 +49,16 @@
                     <p class="text-stone-500 text-xs">Tanggal Dikembalikan</p>
                     <p class="font-medium text-stone-900">{{ $loan->return_date ? $loan->return_date->format('d M Y') : '-' }}</p>
                 </div>
+                <div>
+                    <p class="text-stone-500 text-xs">Kode Verifikasi Bukti Pinjam</p>
+                    @if($loan->verification_code)
+                        <span class="inline-block mt-0.5 font-mono font-extrabold text-sm px-2.5 py-0.5 bg-amber-100 text-amber-900 rounded border border-amber-300 tracking-widest">
+                            {{ $loan->verification_code }}
+                        </span>
+                    @else
+                        <p class="font-medium text-stone-400">-</p>
+                    @endif
+                </div>
             </div>
 
             <div class="border-t border-stone-200 pt-4">
@@ -68,7 +78,20 @@
                 <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 text-sm">
                     <p class="font-bold text-stone-900">{{ $loan->borrower?->name }}</p>
                     <p class="text-stone-500 text-xs">{{ $loan->borrower?->email }}</p>
-                    <p class="text-stone-500 text-xs font-mono mt-1">Role: {{ ucfirst($loan->borrower?->role) }} | Member ID: {{ $loan->borrower?->member_id ?? '-' }}</p>
+                    <div class="flex flex-wrap gap-3 mt-2">
+                        <span class="text-xs text-stone-500 font-mono">Role: <strong class="text-stone-700">{{ ucfirst($loan->borrower?->role) }}</strong></span>
+                        @if($loan->borrower?->nis)
+                            <span class="inline-flex items-center gap-1 text-xs font-mono font-bold px-2 py-0.5 bg-orange-100 text-orange-800 border border-orange-300 rounded">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg>
+                                NIS: {{ $loan->borrower->nis }}
+                            </span>
+                        @else
+                            <span class="text-xs text-stone-400 font-mono">NIS: -</span>
+                        @endif
+                        @if($loan->borrower?->member_id)
+                            <span class="text-xs text-stone-500 font-mono">ID: {{ $loan->borrower->member_id }}</span>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,16 +126,31 @@
 
             <div class="space-y-3">
                 @if($loan->status === 'pending')
-                    <form method="POST" action="{{ route('admin.loans.approve', $loan) }}">
+                    <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
+                        <span class="font-bold block text-xs">Bukti Verifikasi Pinjam</span>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="font-mono text-lg font-black tracking-widest text-amber-950">{{ $loan->verification_code ?? '-' }}</span>
+                        </div>
+                        <span class="text-[11px] text-stone-500 mt-1 block">Cocokkan dengan 5 digit kode yang ditunjukkan peminjam.</span>
+                    </div>
+
+                    <form method="POST" action="{{ route('admin.loans.approve', $loan) }}" class="space-y-3">
                         @csrf
-                        <button type="submit" class="w-full py-2.5 bg-emerald-600 text-white font-semibold rounded-xl text-sm hover:bg-emerald-700 transition-colors">
-                            Setujui Peminjaman
+                        @if($loan->verification_code)
+                            <div>
+                                <label class="block text-xs font-semibold text-stone-700 mb-1">Input Kode Verifikasi Anggota:</label>
+                                <input type="text" name="verification_code" placeholder="Ketik 5 digit kode..." maxlength="5" pattern="[0-9]{5}" required
+                                       class="w-full text-center font-mono font-bold tracking-widest py-2 px-3 border border-stone-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-stone-50 focus:bg-white">
+                            </div>
+                        @endif
+                        <button type="submit" @if($loan->book?->available_stock <= 0) disabled @endif class="w-full py-2.5 bg-emerald-600 text-white font-semibold rounded-xl text-sm hover:bg-emerald-700 transition-colors shadow-sm disabled:opacity-50">
+                            Cocokkan & Setujui Peminjaman
                         </button>
                     </form>
 
-                    <form method="POST" action="{{ route('admin.loans.reject', $loan) }}">
+                    <form method="POST" action="{{ route('admin.loans.reject', $loan) }}" onsubmit="return confirm('Tolak permohonan peminjaman ini?');">
                         @csrf
-                        <button type="submit" class="w-full py-2.5 bg-red-100 text-red-700 font-semibold rounded-xl text-sm hover:bg-red-200 transition-colors">
+                        <button type="submit" class="w-full py-2 bg-red-100 text-red-700 font-semibold rounded-xl text-sm hover:bg-red-200 transition-colors">
                             Tolak Peminjaman
                         </button>
                     </form>

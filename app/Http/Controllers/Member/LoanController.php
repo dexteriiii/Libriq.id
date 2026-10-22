@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Loan;
 use App\Models\Notification;
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\LoanService;
 use Illuminate\Http\RedirectResponse;
@@ -41,14 +42,17 @@ class LoanController extends Controller
             return back()->with('error', $user->getBorrowBlockReason());
         }
 
-        $maxActiveLoans = (int) (DB::table('settings')->where('key', 'max_active_loans')->value('value') ?? 3);
+        // Kuota peminjaman: jika max_active_loans diset 0 / tidak dibatasi, member dapat meminjam tanpa batas
+        $maxActiveLoans = (int) Setting::get('max_active_loans', 0);
 
-        $activeLoanCount = $user->loans()
-            ->whereIn('status', ['pending', 'borrowed', 'overdue'])
-            ->count();
+        if ($maxActiveLoans > 0) {
+            $activeLoanCount = $user->loans()
+                ->whereIn('status', ['pending', 'borrowed', 'overdue'])
+                ->count();
 
-        if ($activeLoanCount >= $maxActiveLoans) {
-            return back()->with('error', "Kamu sudah mencapai batas maksimum {$maxActiveLoans} peminjaman aktif.");
+            if ($activeLoanCount >= $maxActiveLoans) {
+                return back()->with('error', "Kamu sudah mencapai batas maksimum {$maxActiveLoans} peminjaman aktif.");
+            }
         }
 
         if ($book->available_stock <= 0) {
@@ -64,7 +68,9 @@ class LoanController extends Controller
             return back()->with('error', 'Kamu sudah memiliki permintaan aktif untuk buku ini.');
         }
 
-        DB::transaction(function () use ($user, $book) {
+        $verificationCode = null;
+
+        DB::transaction(function () use ($user, $book, &$verificationCode) {
             // Lock baris buku untuk mencegah race condition antar member (PRD 4.2)
             $lockedBook = Book::whereKey($book->id)->lockForUpdate()->first();
 
@@ -72,19 +78,33 @@ class LoanController extends Controller
                 abort(422, 'Stok buku baru saja habis.');
             }
 
+            // Generate 5-digit verification code unik untuk pinjaman pending
+            do {
+                $verificationCode = (string) random_int(10000, 99999);
+            } while (Loan::where('status', 'pending')->where('verification_code', $verificationCode)->exists());
+
             Loan::create([
-                'borrower_id' => $user->id,
-                'book_id' => $lockedBook->id,
-                'status' => 'pending',
+                'borrower_id'       => $user->id,
+                'book_id'           => $lockedBook->id,
+                'status'            => 'pending',
+                'verification_code' => $verificationCode,
+            ]);
+
+            // Kirim notifikasi ke member peminjam
+            Notification::create([
+                'user_id'    => $user->id,
+                'type'       => 'loan_requested',
+                'message'    => "Peminjaman buku \"{$lockedBook->title}\" diajukan. Kode verifikasi: {$verificationCode}. Tunjukkan kode ini ke admin untuk mengambil buku.",
+                'created_at' => now(),
             ]);
 
             // Kirim notifikasi ke semua admin perpustakaan
             $admins = User::where('role', 'admin')->get();
             foreach ($admins as $admin) {
                 Notification::create([
-                    'user_id' => $admin->id,
-                    'type' => 'loan_requested',
-                    'message' => "Permintaan Peminjaman: {$user->name} mengajukan peminjaman buku \"{$lockedBook->title}\".",
+                    'user_id'    => $admin->id,
+                    'type'       => 'loan_requested',
+                    'message'    => "Permintaan Peminjaman: {$user->name} mengajukan buku \"{$lockedBook->title}\" (Kode: {$verificationCode}).",
                     'created_at' => now(),
                 ]);
             }
@@ -92,7 +112,7 @@ class LoanController extends Controller
 
         return redirect()
             ->route('member.loans.history')
-            ->with('success', 'Permintaan peminjaman berhasil diajukan. Menunggu persetujuan admin.');
+            ->with('success', "Permintaan peminjaman berhasil diajukan! Kode Verifikasi Anda: {$verificationCode}. Tunjukkan kode ini ke admin untuk mengambil buku.");
     }
 
     /** Member membatalkan permintaan yang masih berstatus pending */

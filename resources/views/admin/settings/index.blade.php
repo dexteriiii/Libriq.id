@@ -46,8 +46,8 @@
 
             <div>
                 <label class="block text-sm font-medium text-stone-700 mb-1">Kuota Maksimum Peminjaman Aktif Per Member</label>
-                <input type="number" name="max_active_loans" value="{{ old('max_active_loans', $settings['max_active_loans'] ?? 3) }}" min="1" max="50" required class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
-                <p class="text-xs text-stone-500 mt-1">Batas maksimal buku yang dapat dipinjam secara bersamaan oleh seorang member.</p>
+                <input type="number" name="max_active_loans" value="{{ old('max_active_loans', $settings['max_active_loans'] ?? 0) }}" min="0" max="100" required class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                <p class="text-xs text-stone-500 mt-1">Batas maksimal buku yang dapat dipinjam bersamaan. <strong>Isi 0 untuk tanpa batas (unlimited).</strong></p>
             </div>
 
             <div>

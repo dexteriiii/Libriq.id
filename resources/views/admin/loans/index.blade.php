@@ -75,6 +75,9 @@
                                 <div class="font-bold text-stone-900">#{{ $loan->id }}</div>
                                 <div class="text-stone-700 font-medium">{{ $loan->borrower?->name }}</div>
                                 <div class="text-stone-500 text-xs">{{ $loan->borrower?->email }}</div>
+                                @if($loan->borrower?->nis)
+                                    <div class="text-xs font-mono text-orange-700 bg-orange-50 border border-orange-200 rounded px-1.5 py-0.5 inline-block mt-0.5">NIS: {{ $loan->borrower->nis }}</div>
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 <div class="text-stone-900 font-medium line-clamp-1">{{ $loan->book?->title }}</div>
@@ -97,6 +100,12 @@
                                     <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-700">
                                         {{ $badge['label'] }}
                                     </span>
+                                @endif
+
+                                @if($loan->status === 'pending' && $loan->verification_code)
+                                    <div class="mt-1 font-mono text-[11px] font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 inline-block">
+                                        Kode: {{ $loan->verification_code }}
+                                    </div>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-xs text-stone-600">

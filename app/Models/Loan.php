@@ -13,7 +13,7 @@ class Loan extends Model
 
     protected $fillable = [
         'borrower_id', 'book_id', 'borrow_date', 'due_date',
-        'return_date', 'status', 'fine_amount', 'fine_paid_at',
+        'return_date', 'status', 'verification_code', 'fine_amount', 'fine_paid_at',
         'renewal_status', 'renewal_count', 'renewal_requested_at',
         'return_status', 'return_requested_at',
         'fine_payment_status', 'fine_payment_requested_at',
