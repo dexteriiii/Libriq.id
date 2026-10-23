@@ -14,7 +14,7 @@ RUN a2enmod rewrite
 
 # Install ekstensi yang dibutuhkan Laravel, MySQL, dan PostgreSQL
 RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev zip unzip git libzip-dev libpq-dev \
+    libpng-dev libjpeg-dev zip unzip git libzip-dev libpq-dev ca-certificates \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip gd \
     && rm -rf /var/lib/apt/lists/*
 
