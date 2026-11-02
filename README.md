@@ -63,29 +63,7 @@ Aplikasi telah di-deploy dan dapat diakses publik melalui:
 
 ---
 
-## 💡 Panduan Menambahkan Screenshot ke GitHub
 
-Agar gambar screenshot di atas muncul dengan baik di halaman GitHub Anda, ikuti langkah mudah berikut:
-
-1. **Ambil Tangkapan Layar (Screenshot):**
-   - Buka website di browser: [https://libriq-id-b5rwx.sprites.app](https://libriq-id-b5rwx.sprites.app)
-   - Ambil screenshot halaman **Login**, **Dashboard Admin**, dan **Katalog Member** (bisa menggunakan tombol `Win + Shift + S` di Windows).
-2. **Simpan Gambar:**
-   - Simpan screenshot tersebut ke folder proyek: `public/images/screenshots/`
-   - Beri nama masing-masing file:
-     - `login.png`
-     - `admin-dashboard.png`
-     - `member-catalog.png`
-3. **Commit dan Push ke GitHub:**
-   Jalankan perintah berikut di terminal:
-   ```bash
-   git add public/images/screenshots/
-   git commit -m "docs: add screenshots to README"
-   git push origin main
-   ```
-   *Gambar akan otomatis tampil rapi di halaman GitHub Anda!*
-
----
 
 ## 👤 Identitas Pembuat
 - **Nama:** Almay Sonhaji
