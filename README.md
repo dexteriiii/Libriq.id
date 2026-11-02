@@ -8,6 +8,12 @@ Platform manajemen perpustakaan modern berbasis web yang mendigitalisasi alur si
 Aplikasi telah di-deploy dan dapat diakses publik melalui:  
 👉 **[https://libriq-id-b5rwx.sprites.app](https://libriq-id-b5rwx.sprites.app)**
 
+🧑Akun Demo Admin 👉 admin@gmail.com
+                  🔒  password
+
+🧑‍🎓Akun Demo siswa 👉 e@gmail.com
+                     🔒  password
+
 ---
 
 ## 📖 Deskripsi Singkat
