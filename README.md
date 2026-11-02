@@ -1,66 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 Libriq.id — Sistem Manajemen Perpustakaan Digital
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Platform manajemen perpustakaan modern berbasis web yang mendigitalisasi alur sirkulasi buku fisik — mulai dari pencarian katalog, peminjaman, pengembalian, hingga perhitungan denda keterlambatan secara otomatis.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🌐 Link Hasil Hosting
+Aplikasi telah di-deploy dan dapat diakses publik melalui:  
+👉 **[https://libriq-id-b5rwx.sprites.app](https://libriq-id-b5rwx.sprites.app)**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📖 Deskripsi Singkat
+**Libriq.id** dirancang untuk mentransformasi sistem administrasi perpustakaan konvensional menjadi ekosistem digital yang efisien, transparan, dan terintegrasi. Proyek ini bertujuan untuk memudahkan pustakawan dalam mengelola inventaris buku dan transaksi sirkulasi, sekaligus memberikan kemudahan bagi siswa/anggota perpustakaan dalam mengeksplorasi koleksi buku, melakukan peminjaman mandiri, dan memantau status denda secara real-time.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🚀 Fitur Utama
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 👨‍💼 Panel Administrator (Pustakawan)
+- **Ringkasan Statistik Dashboard:** Monitoring cepat total judul buku, sirkulasi aktif, buku jatuh tempo (*overdue*), dan akumulasi pendapatan denda.
+- **Katalog Manajemen Hybrid:** Pengelolaan data buku dengan integrasi pencarian data metadata otomatis via Google Books API maupun input manual.
+- **Sistem Sirkulasi & Validasi:** Memvalidasi permohonan pinjam, pemrosesan pengembalian, dan konfirmasi pembayaran denda.
+- **Manajemen Pengguna:** Pengelolaan data akun siswa/anggota beserta informasi kelas dan NIS.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🧑‍🎓 Portal Siswa / Anggota (Member)
+- **Eksplorasi Katalog (*Cover-first Grid*):** Tampilan visual sampul buku yang menarik, dilengkapi filter kategori cepat dan indikator ketersediaan stok fisik (*Tersedia, Sisa Sedikit, Habis*).
+- **Pengajuan Peminjaman Mandiri:** Proses reservasi atau pengajuan pinjam buku secara langsung melalui sistem.
+- **Riwayat & Tagihan Denda:** Pemantauan tanggal jatuh tempo serta rincian transparansi denda keterlambatan.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Teknologi yang Digunakan
 
-### Premium Partners
+### Backend & Database
+- **Framework:** [Laravel 12](https://laravel.com/) (PHP 8.5)
+- **Database:** SQLite
+- **Autentikasi & Session:** Laravel Session-based Auth & Role-Based Access Control
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Frontend & Styling
+- **HTML5 & Blade Templating Engine**
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) (Modern Utility-First Styling)
+- **Interaktivitas:** [Alpine.js](https://alpinejs.dev/) (Komponen reaktif ringan)
+- **Tipografi:** Plus Jakarta Sans & Inter Fonts
 
-## Contributing
+### Cloud Infrastructure
+- **Hosting Platform:** [Fly.io Sprites](https://fly.io/sprites) (Hardware-isolated MicroVM dengan persistent storage)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 📸 Screenshot Tampilan Project
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+*(Simpan gambar tangkapan layar ke dalam folder `public/images/screenshots/` dengan nama file yang sesuai di bawah)*
 
-## Security Vulnerabilities
+### 1. Halaman Login & Registrasi
+![Halaman Login](public/images/screenshots/login.png)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 2. Dashboard Administrator
+![Dashboard Admin](public/images/screenshots/admin-dashboard.png)
 
-## License
+### 3. Katalog Buku (Member Portal)
+![Katalog Buku Member](public/images/screenshots/member-catalog.png)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 💡 Panduan Menambahkan Screenshot ke GitHub
+
+Agar gambar screenshot di atas muncul dengan baik di halaman GitHub Anda, ikuti langkah mudah berikut:
+
+1. **Ambil Tangkapan Layar (Screenshot):**
+   - Buka website di browser: [https://libriq-id-b5rwx.sprites.app](https://libriq-id-b5rwx.sprites.app)
+   - Ambil screenshot halaman **Login**, **Dashboard Admin**, dan **Katalog Member** (bisa menggunakan tombol `Win + Shift + S` di Windows).
+2. **Simpan Gambar:**
+   - Simpan screenshot tersebut ke folder proyek: `public/images/screenshots/`
+   - Beri nama masing-masing file:
+     - `login.png`
+     - `admin-dashboard.png`
+     - `member-catalog.png`
+3. **Commit dan Push ke GitHub:**
+   Jalankan perintah berikut di terminal:
+   ```bash
+   git add public/images/screenshots/
+   git commit -m "docs: add screenshots to README"
+   git push origin main
+   ```
+   *Gambar akan otomatis tampil rapi di halaman GitHub Anda!*
+
+---
+
+## 👤 Identitas Pembuat
+- **Nama:** Almay Sonhaji
+- **No. Absen:** 06
