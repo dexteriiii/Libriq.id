@@ -56,7 +56,7 @@ Aplikasi telah di-deploy dan dapat diakses publik melalui:
 
 ## 📸 Screenshot Tampilan Project
 
-*(Simpan gambar tangkapan layar ke dalam folder `public/images/screenshots/` dengan nama file yang sesuai di bawah)*
+
 
 ### 1. Halaman Login & Registrasi
 ![Halaman Login](public/images/screenshots/login.png)
