@@ -17,6 +17,7 @@ class User extends Authenticatable
         'name',
         'email',
         'nis',
+        'kelas',
         'password',
         'role',
         'member_id',
@@ -43,6 +44,16 @@ class User extends Authenticatable
         }
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=ea580c&background=ffedd5';
+    }
+
+    public function isActivated(): bool
+    {
+        return ! empty($this->password);
+    }
+
+    public function needsActivation(): bool
+    {
+        return empty($this->password);
     }
 
     public function loans(): HasMany

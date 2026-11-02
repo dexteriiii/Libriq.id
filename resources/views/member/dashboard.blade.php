@@ -12,7 +12,14 @@
                     <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-[10px] sm:text-xs font-semibold rounded-full shrink-0">Anggota</span>
                 </div>
                 <div class="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-1 text-xs text-stone-500 mt-1">
-                    <span class="font-mono bg-stone-100 px-2 py-0.5 rounded text-stone-600 font-medium">ID: {{ auth()->user()->member_id ?? 'Member' }}</span>
+                    @if(auth()->user()->nis)
+                        <span class="font-mono bg-stone-100 px-2 py-0.5 rounded text-stone-600 font-medium">NIS: {{ auth()->user()->nis }}</span>
+                    @else
+                        <span class="font-mono bg-stone-100 px-2 py-0.5 rounded text-stone-600 font-medium">ID: {{ auth()->user()->member_id ?? 'Member' }}</span>
+                    @endif
+                    @if(auth()->user()->kelas)
+                        <span class="bg-orange-50 border border-orange-200/60 px-2 py-0.5 rounded text-orange-700 font-medium">Kelas {{ auth()->user()->kelas }}</span>
+                    @endif
                     <span class="truncate">{{ auth()->user()->email }}</span>
                 </div>
             </div>

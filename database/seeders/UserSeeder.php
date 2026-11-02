@@ -27,9 +27,12 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'member@gmail.com'],
             [
-                'name'     => 'almay',
-                'password' => Hash::make('password'),
-                'role'     => 'member',
+                'name'      => 'almay',
+                'nis'       => '10001',
+                'kelas'     => 'XII RPL 1',
+                'member_id' => '10001',
+                'password'  => Hash::make('password'),
+                'role'      => 'member',
             ]
         );
 
@@ -37,9 +40,12 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'a@gmail.com'],
             [
-                'name'     => 'Anggota Demo',
-                'password' => Hash::make('password'),
-                'role'     => 'member',
+                'name'      => 'Anggota Demo',
+                'nis'       => '10002',
+                'kelas'     => 'XI TKJ 2',
+                'member_id' => '10002',
+                'password'  => Hash::make('password'),
+                'role'      => 'member',
             ]
         );
     }

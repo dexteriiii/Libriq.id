@@ -30,19 +30,31 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-stone-700 mb-1">Alamat Email <span class="text-red-500">*</span></label>
-            <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+            <label class="block text-sm font-medium text-stone-700 mb-1">
+                Alamat Email <span class="text-xs text-stone-400 font-normal">(Wajib untuk Admin, opsional untuk Siswa)</span>
+            </label>
+            <input type="email" name="email" value="{{ old('email', $user->email) }}" placeholder="nama@email.com" class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
         </div>
 
-        <div>
-            <label class="block text-sm font-medium text-stone-700 mb-1">NIS (Nomor Induk Siswa)</label>
-            <input type="text" name="nis" value="{{ old('nis', $user->nis) }}"
-                placeholder="5 digit angka, mis. 12345"
-                maxlength="5" pattern="[0-9]{5}"
-                inputmode="numeric"
-                oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 font-mono">
-            <p class="text-xs text-stone-400 mt-1">Harus tepat 5 digit angka.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-stone-700 mb-1">NIS (Nomor Induk Siswa)</label>
+                <input type="text" name="nis" value="{{ old('nis', $user->nis) }}"
+                    placeholder="5 digit angka, mis. 12345"
+                    maxlength="5" pattern="[0-9]{5}"
+                    inputmode="numeric"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                    class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 font-mono">
+                <p class="text-xs text-stone-400 mt-1">Harus tepat 5 digit angka.</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-stone-700 mb-1">Kelas</label>
+                <input type="text" name="kelas" value="{{ old('kelas', $user->kelas) }}"
+                    placeholder="Contoh: XII RPL 1, X MIPA 2"
+                    class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                <p class="text-xs text-stone-400 mt-1">Khusus anggota / siswa perpustakaan.</p>
+            </div>
         </div>
 
         <div>

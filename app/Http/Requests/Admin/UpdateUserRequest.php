@@ -16,11 +16,13 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         $userId = $this->route('user')?->id;
+        $isAdminRole = $this->input('role') === 'admin';
 
         return [
             'name'      => ['required', 'string', 'max:255'],
             'nis'       => ['nullable', 'string', 'size:5', 'regex:/^[0-9]{5}$/', Rule::unique('users', 'nis')->ignore($userId)],
-            'email'     => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
+            'kelas'     => ['nullable', 'string', 'max:50'],
+            'email'     => [$isAdminRole ? 'required' : 'nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
             'password'  => ['nullable', 'confirmed', Password::defaults()],
             'role'      => ['required', 'in:admin,member'],
             'member_id' => ['nullable', 'string', 'max:50', Rule::unique('users', 'member_id')->ignore($userId)],

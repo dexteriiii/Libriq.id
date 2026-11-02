@@ -20,13 +20,33 @@
             <img src="{{ $user->avatar_url }}" alt="Avatar {{ $user->name }}" class="w-14 h-14 rounded-full object-cover border-2 border-orange-200 shrink-0">
             <div>
                 <h3 class="font-bold text-stone-900">{{ $user->name }}</h3>
-                <p class="text-xs text-stone-500">{{ $user->email }}</p>
+                @if($user->email)
+                    <p class="text-xs text-stone-500">{{ $user->email }}</p>
+                @else
+                    <p class="text-xs text-amber-600 italic">Email belum diisi siswa</p>
+                @endif
                 @if($user->nis)
                     <p class="text-xs text-stone-600 font-mono font-medium mt-0.5">NIS: {{ $user->nis }}</p>
                 @endif
-                <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold {{ $user->isAdmin() ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800' }}">
-                    {{ ucfirst($user->role) }}
-                </span>
+                @if($user->kelas)
+                    <p class="text-xs text-stone-600 font-medium mt-0.5">Kelas: <span class="text-stone-900 font-semibold">{{ $user->kelas }}</span></p>
+                @endif
+                <div class="mt-1 flex items-center gap-1.5 flex-wrap">
+                    <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold {{ $user->isAdmin() ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800' }}">
+                        {{ ucfirst($user->role) }}
+                    </span>
+                    @if($user->role === 'member')
+                        @if($user->needsActivation())
+                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">
+                                Belum Aktivasi
+                            </span>
+                        @else
+                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                                Akun Aktif
+                            </span>
+                        @endif
+                    @endif
+                </div>
             </div>
         </div>
 

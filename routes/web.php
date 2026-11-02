@@ -19,6 +19,13 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
 
+    // Aktivasi akun siswa baru (pertama kali login)
+    Route::get('/activate', [LoginController::class, 'showActivateForm'])->name('activate');
+    Route::post('/activate/verify', [LoginController::class, 'verifyForActivation'])->name('activate.verify');
+    Route::post('/activate/complete', [LoginController::class, 'completeActivation'])->name('activate.complete');
+    Route::post('/activate/cancel', [LoginController::class, 'cancelActivation'])->name('activate.cancel');
+
+    // Registrasi publik dinonaktifkan (hanya admin yang dapat mendaftarkan siswa)
     Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [LoginController::class, 'register']);
 });

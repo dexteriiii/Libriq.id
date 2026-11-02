@@ -132,6 +132,14 @@
                         </div>
                     @endif
 
+                    {{-- Info message --}}
+                    @if (session('info'))
+                        <div class="mb-6 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-xl text-xs sm:text-sm flex items-start gap-2.5">
+                            <svg class="w-5 h-5 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>{{ session('info') }}</span>
+                        </div>
+                    @endif
+
                     {{-- Demo Admin Info & Autofill --}}
                     <!-- [MULAI KODE DEMO ADMIN - BISA DIHAPUS JIKA TIDAK DIGUNAKAN] -->
                     <div class="mb-6 p-4 rounded-xl bg-orange-50 border border-orange-200 text-orange-900 text-xs">
@@ -142,8 +150,8 @@
                             </div>
                             <button 
                                 type="button" 
-                                onclick="document.getElementById('email').value='admin@gmail.com'; document.getElementById('password').value='password';"
-                                class="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg text-[11px] transition"
+                                onclick="const l=document.getElementById('login')||document.getElementById('email'); if(l) l.value='admin@gmail.com'; document.getElementById('password').value='password';"
+                                class="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg text-[11px] transition cursor-pointer"
                             >
                                 Isi Otomatis
                             </button>
@@ -157,29 +165,34 @@
                     <form method="POST" action="{{ route('login') }}" class="space-y-5">
                         @csrf
 
-                        {{-- Email --}}
+                        {{-- Login (NIS / Email) --}}
                         <div>
-                            <label for="email" class="block text-sm font-medium text-stone-700 mb-1.5">
-                                Email
+                            <label for="login" class="block text-sm font-medium text-stone-700 mb-1.5">
+                                NIS atau Email
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                     <svg class="w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>
                                 </div>
                                 <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    value="{{ old('email', 'admin@gmail.com') }}"
+                                    id="login"
+                                    name="login"
+                                    type="text"
+                                    value="{{ old('login', old('email', 'admin@gmail.com')) }}"
                                     required
                                     autofocus
-                                    autocomplete="email"
-                                    placeholder="nama@email.com"
-                                    class="block w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition duration-200 @error('email') border-red-400 focus:ring-red-500/20 focus:border-red-500 @enderror"
+                                    autocomplete="username"
+                                    placeholder="Contoh: 10003 atau admin@gmail.com"
+                                    class="block w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition duration-200 @if($errors->has('login') || $errors->has('email')) border-red-400 focus:ring-red-500/20 focus:border-red-500 @endif"
                                 >
                             </div>
+                            @if($errors->has('login'))
+                                <p class="text-xs text-red-600 mt-1.5">{{ $errors->first('login') }}</p>
+                            @elseif($errors->has('email'))
+                                <p class="text-xs text-red-600 mt-1.5">{{ $errors->first('email') }}</p>
+                            @endif
                         </div>
 
                         {{-- Password --}}
@@ -237,22 +250,21 @@
                         {{-- Submit Button --}}
                         <button
                             type="submit"
-                            class="w-full py-3 px-4 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-semibold rounded-xl shadow-sm hover:shadow transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:ring-offset-2"
+                            class="w-full py-3 px-4 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-semibold rounded-xl shadow-sm hover:shadow transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:ring-offset-2 cursor-pointer"
                         >
                             Masuk
                         </button>
                     </form>
 
-                    {{-- Register Link --}}
-                    <p class="text-center text-sm text-stone-500 mt-6">
-                        Belum punya akun?
-                        <a href="{{ route('register') }}" class="text-orange-600 hover:text-orange-700 font-semibold transition">
-                            Daftar sekarang
+                    {{-- Tombol Aktivasi Siswa Baru (Pertama Kali Masuk) --}}
+                    <div class="mt-6 pt-5 border-t border-stone-100 text-center">
+                        <p class="text-xs text-stone-500 mb-2.5">Siswa baru yang belum memiliki password?</p>
+                        <a href="{{ route('activate') }}" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs">
+                            <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                            Aktivasi Akun Siswa Baru (Pertama Kali Masuk)
                         </a>
-                    </p>
+                    </div>
                 </div>
-
-                {{-- Footer --}}
                 <p class="text-center text-xs text-stone-400 mt-6">
                     &copy; {{ date('Y') }} Libriq.id — Sistem Manajemen Perpustakaan Digital
                 </p>

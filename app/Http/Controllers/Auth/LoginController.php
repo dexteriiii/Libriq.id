@@ -20,18 +20,36 @@ class LoginController extends Controller
     }
 
     /**
-     * Handle login request.
+     * Handle login request (mendukung NIS atau Email + Password).
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email'    => ['required', 'email'],
+        $loginInput = trim((string) $request->input('login', $request->input('email', '')));
+        $password   = (string) $request->input('password', '');
+
+        $request->validate([
+            'login'    => ['required_without:email'],
+            'email'    => ['required_without:login'],
             'password' => ['required'],
         ], [
-            'email.required'    => 'Email wajib diisi.',
-            'email.email'       => 'Format email tidak valid.',
-            'password.required' => 'Password wajib diisi.',
+            'login.required_without' => 'NIS atau Email wajib diisi.',
+            'email.required_without' => 'NIS atau Email wajib diisi.',
+            'password.required'      => 'Password wajib diisi.',
         ]);
+
+        // Tentukan apakah input berupa Email atau NIS
+        $isEmail = filter_var($loginInput, FILTER_VALIDATE_EMAIL);
+        $field   = $isEmail ? 'email' : 'nis';
+
+        // Cek apakah akun ada tapi belum pernah diaktivasi (password masih kosong)
+        $potentialUser = User::where($field, $loginInput)->first();
+        if ($potentialUser && $potentialUser->needsActivation()) {
+            return back()->withErrors([
+                'login' => 'Akun dengan ' . strtoupper($field) . " '{$loginInput}' belum diaktivasi (belum memiliki password). Silakan klik tombol 'Aktivasi Akun Siswa Baru' di bawah terlebih dahulu.",
+            ])->withInput(['login' => $loginInput, 'email' => $loginInput]);
+        }
+
+        $credentials = [$field => $loginInput, 'password' => $password];
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
@@ -43,58 +61,141 @@ class LoginController extends Controller
                 ? route('admin.dashboard') 
                 : route('member.dashboard');
 
-            // Redirect ke URL yang sebelumnya diakses user, atau fallback ke targetRoute sesuai role
             return redirect()->intended($targetRoute);
         }
 
         return back()->withErrors([
-            'email' => 'Email atau password yang Anda masukkan salah.',
-        ])->onlyInput('email');
+            'login' => 'NIS/Email atau password yang Anda masukkan salah.',
+        ])->withInput(['login' => $loginInput, 'email' => $loginInput]);
     }
 
     /**
-     * Show the registration form.
+     * Tampilkan formulir aktivasi akun siswa baru (pertama kali masuk).
+     */
+    public function showActivateForm(Request $request)
+    {
+        $activatingUserId = session('activating_user_id');
+        $student = $activatingUserId ? User::find($activatingUserId) : null;
+
+        // Jika user sudah memiliki password, bersihkan session aktivasi
+        if ($student && $student->isActivated()) {
+            session()->forget('activating_user_id');
+            $student = null;
+        }
+
+        return view('auth.activate', compact('student'));
+    }
+
+    /**
+     * Verifikasi tahap 1: Cek kecocokan NIS dan Nama Siswa yang diimpor Admin.
+     */
+    public function verifyForActivation(Request $request)
+    {
+        $validated = $request->validate([
+            'nis'  => ['required', 'string'],
+            'name' => ['required', 'string'],
+        ], [
+            'nis.required'  => 'NIS (Nomor Induk Siswa) wajib diisi.',
+            'name.required' => 'Nama lengkap siswa wajib diisi.',
+        ]);
+
+        $cleanNis  = trim($validated['nis']);
+        $cleanName = trim($validated['name']);
+
+        $user = User::where('nis', $cleanNis)->first();
+
+        if (! $user) {
+            return back()->withErrors([
+                'nis' => "NIS '{$cleanNis}' tidak terdaftar di sistem perpustakaan. Pastikan pihak admin sekolah telah mendaftarkan data Anda.",
+            ])->withInput();
+        }
+
+        if ($user->isActivated()) {
+            return back()->withErrors([
+                'nis' => "Akun dengan NIS '{$cleanNis}' sudah aktif sebelumnya. Silakan login langsung menggunakan NIS/Email dan password Anda.",
+            ])->withInput();
+        }
+
+        // Cek kecocokan nama (case-insensitive)
+        if (strcasecmp(trim($user->name), $cleanName) !== 0) {
+            return back()->withErrors([
+                'name' => "Nama yang Anda masukkan tidak cocok dengan data terdaftar untuk NIS {$cleanNis}. Pastikan penulisan nama sama persis dengan yang didaftarkan pihak sekolah.",
+            ])->withInput();
+        }
+
+        // Simpan ID user ke session untuk tahap 2 aktivasi
+        session(['activating_user_id' => $user->id]);
+
+        return redirect()->route('activate')->with('status', 'Data siswa berhasil diverifikasi! Silakan lengkapi email dan buat password baru Anda.');
+    }
+
+    /**
+     * Selesaikan tahap 2: Simpan Email dan Password baru untuk siswa.
+     */
+    public function completeActivation(Request $request)
+    {
+        $activatingUserId = session('activating_user_id');
+        if (! $activatingUserId) {
+            return redirect()->route('activate')->withErrors([
+                'error' => 'Sesi aktivasi telah berakhir atau tidak valid. Silakan verifikasi NIS dan Nama Anda kembali.',
+            ]);
+        }
+
+        $user = User::find($activatingUserId);
+        if (! $user || $user->isActivated()) {
+            session()->forget('activating_user_id');
+            return redirect()->route('login')->with('info', 'Akun Anda sudah aktif. Silakan langsung login.');
+        }
+
+        $validated = $request->validate([
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ], [
+            'email.required'     => 'Email wajib diisi.',
+            'email.email'        => 'Format email tidak valid.',
+            'email.unique'       => 'Email ini sudah terdaftar oleh pengguna lain.',
+            'password.required'  => 'Password wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min'       => 'Password minimal 8 karakter.',
+        ]);
+
+        $user->update([
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        session()->forget('activating_user_id');
+
+        // Otomatis login siswa dan arahkan ke dashboard
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('member.dashboard')->with('success', "Selamat datang, {$user->name}! Akun perpustakaan Anda berhasil diaktivasi.");
+    }
+
+    /**
+     * Batalkan sesi aktivasi (kembali ke input NIS & Nama).
+     */
+    public function cancelActivation()
+    {
+        session()->forget('activating_user_id');
+        return redirect()->route('activate');
+    }
+
+    /**
+     * Halaman registrasi publik dinonaktifkan (diarahkan ke login).
      */
     public function showRegisterForm()
     {
-        return view('auth.register');
+        return redirect()->route('login')->with('info', 'Pendaftaran akun mandiri dinonaktifkan. Akun siswa didaftarkan langsung oleh administrator sekolah. Jika NIS Anda sudah didaftarkan, silakan klik tombol Aktivasi Akun.');
     }
 
     /**
-     * Handle registration request.
+     * Handle registration request (dinonaktifkan).
      */
     public function register(Request $request)
     {
-        $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'nis'      => ['required', 'string', 'size:5', 'regex:/^[0-9]{5}$/', 'unique:users,nis'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(8)],
-        ], [
-            'name.required'       => 'Nama lengkap wajib diisi.',
-            'nis.required'        => 'NIS (Nomor Induk Siswa) wajib diisi.',
-            'nis.size'            => 'NIS harus tepat 5 digit angka.',
-            'nis.regex'           => 'NIS hanya boleh berisi angka (5 digit).',
-            'nis.unique'          => 'NIS ini sudah terdaftar.',
-            'email.required'      => 'Email wajib diisi.',
-            'email.email'         => 'Format email tidak valid.',
-            'email.unique'        => 'Email sudah terdaftar.',
-            'password.required'   => 'Password wajib diisi.',
-            'password.confirmed'  => 'Konfirmasi password tidak cocok.',
-            'password.min'        => 'Password minimal 8 karakter.',
-        ]);
-
-        $user = User::create([
-            'name'      => $validated['name'],
-            'nis'       => $validated['nis'],
-            'member_id' => $validated['nis'],
-            'email'     => $validated['email'],
-            'password'  => Hash::make($validated['password']),
-            'role'      => 'member', // Default role for new registrations
-        ]);
-
-        // Jangan otomatis login, arahkan kembali ke halaman login dengan pesan sukses
-        return redirect()->route('login')->with('status', 'Pendaftaran berhasil! Silakan login menggunakan akun baru Anda.');
+        return redirect()->route('login')->with('info', 'Pendaftaran akun mandiri dinonaktifkan.');
     }
 
     /**
