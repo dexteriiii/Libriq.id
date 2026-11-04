@@ -1,0 +1,26 @@
+name: Auto Deploy to Fly.io Sprite
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Sprites CLI
+        run: |
+          curl -fsSL https://sprites.dev/install.sh | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Authenticate with Sprites
+        run: |
+          sprite auth setup --token "${{ secrets.SPRITE_TOKEN }}"
+
+      - name: Pull and Deploy to Sprite
+        run: |
+          sprite exec -o solomery601-gmail-com -s libriq-id --no-stdin -- bash -c "cd /home/sprite/Libriq.id && git pull origin main && php artisan optimize:clear && sprite-env services restart laravel"
