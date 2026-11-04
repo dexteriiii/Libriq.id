@@ -6,6 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Libriq.id — Perpustakaan Digital' }}</title>
 
+    {{-- Favicon --}}
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -222,35 +225,13 @@
         </div>
     </header>
 
-    {{-- Main Content (with extra bottom padding for mobile navigation bar) --}}
-    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 pb-24 md:pb-8">
+    {{-- Main Content --}}
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 pb-8">
         {{ $slot }}
     </main>
 
-    {{-- Mobile Bottom Navigation Bar (Android/iOS style) --}}
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 safe-bottom shadow-lg">
-        <div class="grid grid-cols-4 h-16 max-w-md mx-auto">
-            <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->routeIs('member.dashboard') ? 'text-orange-600 font-bold' : 'text-stone-500 hover:text-stone-900 font-medium' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ request()->routeIs('member.dashboard') ? '2.5' : '2' }}" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                <span class="text-[10px]">Beranda</span>
-            </a>
-            <a href="{{ route('member.catalog.index') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->routeIs('member.catalog.*') ? 'text-orange-600 font-bold' : 'text-stone-500 hover:text-stone-900 font-medium' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ request()->routeIs('member.catalog.*') ? '2.5' : '2' }}" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                <span class="text-[10px]">Katalog</span>
-            </a>
-            <a href="{{ route('member.loans.history') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->routeIs('member.loans.*') ? 'text-orange-600 font-bold' : 'text-stone-500 hover:text-stone-900 font-medium' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ request()->routeIs('member.loans.*') ? '2.5' : '2' }}" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                <span class="text-[10px]">Pinjaman</span>
-            </a>
-            <a href="{{ route('member.profile.edit') }}" class="flex flex-col items-center justify-center gap-1 {{ request()->routeIs('member.profile.*') ? 'text-orange-600 font-bold' : 'text-stone-500 hover:text-stone-900 font-medium' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="{{ request()->routeIs('member.profile.*') ? '2.5' : '2' }}" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                <span class="text-[10px]">Profil</span>
-            </a>
-        </div>
-    </nav>
-
-    {{-- Footer (Desktop only — hidden on mobile karena ada bottom nav) --}}
-    <footer class="bg-white border-t border-stone-200 mt-auto hidden md:block">
+    {{-- Footer --}}
+    <footer class="bg-white border-t border-stone-200 mt-auto block">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 

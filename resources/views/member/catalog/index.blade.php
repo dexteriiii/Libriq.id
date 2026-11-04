@@ -95,6 +95,7 @@
                         <img src="{{ $book->cover }}" 
                              alt="{{ $book->title }}" 
                              loading="lazy"
+                             onerror="this.onerror=null; this.src='https://placehold.co/300x400/f5f5f4/a8a29e?text=No+Cover';"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out">
 
                         {{-- Gradient Overlay --}}

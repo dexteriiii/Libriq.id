@@ -29,7 +29,7 @@ class Book extends Model
     public function getCoverAttribute(): string
     {
         if ($this->cover_path) {
-            return Storage::disk('public')->url($this->cover_path);
+            return asset('storage/' . $this->cover_path);
         }
 
         return $this->cover_url ?: asset('images/book-placeholder.png');

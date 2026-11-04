@@ -55,8 +55,8 @@
 
     {{-- Loans Table --}}
     <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+        <div class="overflow-x-auto w-full scrollbar-thin">
+            <table class="w-full text-left border-collapse min-w-[768px]">
                 <thead>
                     <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
                         <th class="px-6 py-4 font-semibold">ID & Peminjam</th>

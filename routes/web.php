@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -9,10 +10,10 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Redirect root to login
+// Landing Page (home)
 Route::get('/', function () {
-    return redirect('/login');
-});
+    return view('landing');
+})->name('home');
 
 // Guest routes (unauthenticated users only)
 Route::middleware('guest')->group(function () {
@@ -49,3 +50,11 @@ Route::middleware('auth')->group(function () {
 
 // Admin Routes (terpisah — middleware diatur di dalam admin.php)
 require __DIR__.'/admin.php';
+
+// Fallback route untuk file storage jika symlink Windows tidak aktif / belum di-link
+Route::get('/storage/{path}', function (string $path) {
+    if (Storage::disk('public')->exists($path)) {
+        return Storage::disk('public')->response($path);
+    }
+    abort(404);
+})->where('path', '.*');

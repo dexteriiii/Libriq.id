@@ -62,8 +62,8 @@
 
     {{-- Books Table --}}
     <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+        <div class="overflow-x-auto w-full scrollbar-thin">
+            <table class="w-full text-left border-collapse min-w-[680px]">
                 <thead>
                     <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
                         <th class="px-6 py-4 font-semibold">Buku & Metadata</th>
@@ -79,7 +79,7 @@
                             <td class="px-6 py-4">
                                 <div class="flex gap-4 items-center">
                                     <div class="w-12 h-16 bg-stone-100 rounded shadow-sm overflow-hidden shrink-0">
-                                        <img src="{{ $book->cover }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
+                                        <img src="{{ $book->cover }}" alt="{{ $book->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/300x400/f5f5f4/a8a29e?text=No+Cover';">
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-stone-900 line-clamp-1">{{ $book->title }}</h4>

@@ -59,7 +59,7 @@ class BookController extends Controller
     public function create()
     {
         return view('admin.books.create');
-    }
+    }   
 
     // ─── Fetch from Google Books API (Ajax) ───────────────────────────────────
 

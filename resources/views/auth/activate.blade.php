@@ -43,6 +43,22 @@
                         <div class="text-sm text-orange-100">Akun langsung aktif dan siap digunakan membaca</div>
                     </div>
                 </div>
+
+                {{-- Link Bantuan WhatsApp di Left Panel --}}
+                <div class="mt-8 pt-6 border-t border-white/20">
+                    <p class="text-xs text-orange-200 mb-2.5">Mengalami kendala data atau NIS belum terdaftar?</p>
+                    <a 
+                        href="https://wa.me/6281234567890?text={{ urlencode('Halo Admin Libriq.id, saya mengalami kendala saat aktivasi akun siswa (NIS tidak terdaftar / kendala data). Mohon bantuannya.') }}" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-white/15 hover:bg-white/25 text-white border border-white/30 rounded-xl text-xs font-semibold backdrop-blur-sm transition-all"
+                    >
+                        <svg class="w-4 h-4 fill-current text-emerald-300" viewBox="0 0 24 24">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.158.571 4.183 1.571 5.928l-1.571 5.728 5.897-1.547c1.706.945 3.67 1.488 5.753 1.488 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/>
+                        </svg>
+                        <span>Chat Bantuan WhatsApp</span>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -152,6 +168,25 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                             </button>
                         </form>
+
+                        {{-- Bantuan Hubungi Admin via WhatsApp --}}
+                        <div class="mt-4 p-3.5 bg-stone-50 border border-stone-200/80 rounded-xl text-center">
+                            <p class="text-xs text-stone-600 mb-2">
+                                NIS tidak ditemukan atau ada kendala aktivasi?
+                            </p>
+                            <a 
+                                href="https://wa.me/6285723052980?text={{ urlencode('Halo Admin Libriq.id, saya mengalami kendala saat aktivasi akun siswa (NIS tidak terdaftar / kendala data). Mohon bantuannya.') }}" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs hover:shadow transition-all duration-200"
+                            >
+                                {{-- WhatsApp Icon --}}
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.158.571 4.183 1.571 5.928l-1.571 5.728 5.897-1.547c1.706.945 3.67 1.488 5.753 1.488 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/>
+                                </svg>
+                                <span>Hubungi Admin via WhatsApp</span>
+                            </a>
+                        </div>
                     @else
                         {{-- STEP 2: LENGKAPI EMAIL & BUAT PASSWORD --}}
                         <div class="mb-5 p-3.5 bg-orange-50 border border-orange-200 rounded-xl">

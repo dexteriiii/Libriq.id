@@ -18,7 +18,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
         <div class="md:col-span-1">
             <div class="max-w-xs mx-auto md:max-w-none aspect-[2/3] rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm">
-                <img src="{{ $book->cover }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
+                <img src="{{ $book->cover }}" alt="{{ $book->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/300x400/f5f5f4/a8a29e?text=No+Cover';">
             </div>
         </div>
 

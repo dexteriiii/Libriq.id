@@ -20,7 +20,33 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('admin.books.update', $book) }}" enctype="multipart/form-data" class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 sm:p-8 space-y-6">
+    <form method="POST" action="{{ route('admin.books.update', $book) }}" enctype="multipart/form-data" 
+          x-data="{
+              localCoverPreview: null,
+              localCoverError: '',
+              coverUrl: '{{ old('cover_url', $book->cover_url) }}',
+              handleLocalCover(event) {
+                  const file = event.target.files[0];
+                  this.localCoverError = '';
+                  if (file) {
+                      if (file.size > 2 * 1024 * 1024) {
+                          this.localCoverError = 'Ukuran file lebih dari 2MB (' + (file.size / (1024 * 1024)).toFixed(2) + 'MB). Harap pilih file yang lebih kecil.';
+                          this.removeLocalCover();
+                          return;
+                      }
+                      this.localCoverPreview = URL.createObjectURL(file);
+                  } else {
+                      this.localCoverPreview = null;
+                  }
+              },
+              removeLocalCover() {
+                  this.localCoverPreview = null;
+                  if (this.$refs.coverInput) {
+                      this.$refs.coverInput.value = '';
+                  }
+              }
+          }"
+          class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 sm:p-8 space-y-6">
         @csrf
         @method('PUT')
 
@@ -75,22 +101,54 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-stone-200 pt-4">
             <div>
                 <label class="block text-sm font-medium text-stone-700 mb-1">URL Cover API</label>
-                <input type="text" name="cover_url" value="{{ old('cover_url', $book->cover_url) }}" class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+                <input type="text" name="cover_url" x-model="coverUrl" class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-stone-700 mb-1">Upload Override Cover Baru (Maks 2MB)</label>
-                <input type="file" name="cover" accept="image/png,image/jpeg,image/jpg" class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
+                <input 
+                    type="file" 
+                    name="cover" 
+                    x-ref="coverInput"
+                    @change="handleLocalCover($event)"
+                    accept="image/png,image/jpeg,image/jpg,image/webp" 
+                    class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer"
+                >
+                <template x-if="localCoverError">
+                    <p class="text-xs text-red-600 mt-1 font-medium" x-text="localCoverError"></p>
+                </template>
             </div>
         </div>
 
-        <div class="flex items-center gap-4 bg-stone-50 p-4 rounded-xl border border-stone-200">
-            <img src="{{ $book->cover }}" alt="Current Cover" class="w-16 h-20 object-cover rounded border shadow-sm">
-            <div>
-                <p class="text-sm font-medium text-stone-900">Cover Saat Ini</p>
-                <p class="text-xs text-stone-500">{{ $book->cover_path ? 'Menggunakan custom upload' : ($book->cover_url ? 'Menggunakan URL Google Books API' : 'Menggunakan placeholder') }}</p>
+        {{-- Preview Area --}}
+        <template x-if="localCoverPreview">
+            <div class="flex items-center gap-4 bg-emerald-50/80 p-4 rounded-xl border border-emerald-200">
+                <img :src="localCoverPreview" alt="New Cover Preview" class="w-16 h-22 object-cover rounded-lg border border-emerald-300 shadow-sm shrink-0">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800">
+                            File Baru Dipilih
+                        </span>
+                        <span class="text-xs text-stone-500">Akan menggantikan cover buku saat disimpan</span>
+                    </div>
+                    <p class="text-xs text-stone-600 mt-1">Preview cover baru dari perangkat lokal Anda.</p>
+                    <button type="button" @click="removeLocalCover()" class="mt-2 text-xs font-semibold text-red-600 hover:text-red-800 inline-flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        Batalkan Pilihan File Baru Ini
+                    </button>
+                </div>
             </div>
-        </div>
+        </template>
+
+        <template x-if="!localCoverPreview">
+            <div class="flex items-center gap-4 bg-stone-50 p-4 rounded-xl border border-stone-200">
+                <img :src="coverUrl || '{{ $book->cover }}'" alt="Current Cover" class="w-16 h-22 object-cover rounded-lg border shadow-sm shrink-0">
+                <div>
+                    <p class="text-sm font-medium text-stone-900">Cover Saat Ini</p>
+                    <p class="text-xs text-stone-500">{{ $book->cover_path ? 'Menggunakan custom upload lokal' : ($book->cover_url ? 'Menggunakan URL Google Books API' : 'Menggunakan cover placeholder default') }}</p>
+                </div>
+            </div>
+        </template>
 
         <div class="flex justify-between items-center border-t border-stone-200 pt-6">
             <button type="button" onclick="if(confirm('Apakah Anda yakin ingin menghapus buku ini?')) document.getElementById('delete-form').submit();" class="px-4 py-2.5 bg-red-50 text-red-600 rounded-xl text-sm font-medium hover:bg-red-100 transition-colors">

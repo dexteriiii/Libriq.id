@@ -112,7 +112,7 @@
                         <li class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 {{ $isOverdue ? 'bg-red-50/40' : '' }}">
                             <div class="flex items-center gap-4 min-w-0 flex-1">
                                 <a href="{{ route('member.catalog.show', $loan->book) }}" class="shrink-0 group/cover block">
-                                    <img src="{{ $loan->book->cover }}" alt="{{ $loan->book->title }}" class="w-12 h-16 object-cover rounded-md bg-stone-100 shadow-xs group-hover/cover:opacity-90 transition-opacity">
+                                    <img src="{{ $loan->book->cover }}" alt="{{ $loan->book->title }}" onerror="this.onerror=null; this.src='https://placehold.co/300x400/f5f5f4/a8a29e?text=No+Cover';" class="w-12 h-16 object-cover rounded-md bg-stone-100 shadow-xs group-hover/cover:opacity-90 transition-opacity">
                                 </a>
                                 <div class="min-w-0 flex-1">
                                     <a href="{{ route('member.catalog.show', $loan->book) }}" class="font-medium text-stone-900 truncate block hover:text-orange-600 transition-colors">

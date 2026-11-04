@@ -27,6 +27,28 @@
         errorMessage: '',
         warningMessage: '',
         existingBook: null,
+        localCoverPreview: null,
+        localCoverError: '',
+        handleLocalCover(event) {
+            const file = event.target.files[0];
+            this.localCoverError = '';
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    this.localCoverError = 'Ukuran file lebih dari 2MB (' + (file.size / (1024 * 1024)).toFixed(2) + 'MB). Harap pilih file yang lebih kecil.';
+                    this.removeLocalCover();
+                    return;
+                }
+                this.localCoverPreview = URL.createObjectURL(file);
+            } else {
+                this.localCoverPreview = null;
+            }
+        },
+        removeLocalCover() {
+            this.localCoverPreview = null;
+            if (this.$refs.coverInput) {
+                this.$refs.coverInput.value = '';
+            }
+        },
         formData: {
             isbn: '{{ old('isbn') }}',
             title: '{{ old('title') }}',
@@ -198,17 +220,50 @@
 
                 <div>
                     <label class="block text-sm font-medium text-stone-700 mb-1">Upload Custom Cover (Override File, Maks 2MB)</label>
-                    <input type="file" name="cover" accept="image/png,image/jpeg,image/jpg" class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
+                    <input 
+                        type="file" 
+                        name="cover" 
+                        x-ref="coverInput"
+                        @change="handleLocalCover($event)"
+                        accept="image/png,image/jpeg,image/jpg,image/webp" 
+                        class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer"
+                    >
+                    <template x-if="localCoverError">
+                        <p class="text-xs text-red-600 mt-1 font-medium" x-text="localCoverError"></p>
+                    </template>
                 </div>
             </div>
 
-            {{-- Preview Image if available --}}
-            <template x-if="formData.cover_url">
+            {{-- Preview Image: Prioritaskan file upload lokal jika ada, lalu fallback ke URL API --}}
+            <template x-if="localCoverPreview">
+                <div class="flex items-center gap-4 bg-emerald-50/80 p-4 rounded-xl border border-emerald-200">
+                    <img :src="localCoverPreview" alt="Preview Cover Lokal" class="w-16 h-22 object-cover rounded-lg border border-emerald-300 shadow-sm shrink-0">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800">
+                                File Baru Dipilih
+                            </span>
+                            <span class="text-xs text-stone-500">Akan diprioritaskan sebagai cover buku</span>
+                        </div>
+                        <p class="text-xs text-stone-600 mt-1">Preview gambar yang baru saja Anda pilih dari perangkat lokal.</p>
+                        <button type="button" @click="removeLocalCover()" class="mt-2 text-xs font-semibold text-red-600 hover:text-red-800 inline-flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            Batalkan / Hapus Pilihan Cover
+                        </button>
+                    </div>
+                </div>
+            </template>
+
+            <template x-if="!localCoverPreview && formData.cover_url">
                 <div class="flex items-center gap-4 bg-stone-50 p-4 rounded-xl border border-stone-200">
-                    <img :src="formData.cover_url" alt="Cover Preview" class="w-16 h-20 object-cover rounded border shadow-sm">
+                    <img :src="formData.cover_url" alt="Cover Preview" class="w-16 h-22 object-cover rounded-lg border border-stone-300 shadow-sm shrink-0">
                     <div>
-                        <p class="text-sm font-medium text-stone-900">Preview Cover dari API</p>
-                        <p class="text-xs text-stone-500">Akan digunakan jika tidak ada custom cover yang diupload.</p>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-orange-100 text-orange-800">
+                                Cover dari API
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-500 mt-1">Akan otomatis digunakan jika Anda tidak mengunggah file custom cover lokal.</p>
                     </div>
                 </div>
             </template>

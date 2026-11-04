@@ -27,7 +27,7 @@ class UpdateBookRequest extends FormRequest
             'rack_location' => ['nullable', 'string', 'max:50'],
             'total_stock'   => ['required', 'integer', 'min:1'],
             'cover_url'     => ['nullable', 'url', 'max:500'],
-            'cover'         => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'cover'         => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,jfif', 'max:2048'],
         ];
     }
 
@@ -37,7 +37,7 @@ class UpdateBookRequest extends FormRequest
             'isbn.unique'      => 'ISBN ini sudah terdaftar di katalog.',
             'total_stock.min'  => 'Jumlah stok minimal 1 eksemplar.',
             'cover.max'        => 'Ukuran file cover maksimal 2MB.',
-            'cover.mimes'      => 'Format cover hanya JPG atau PNG.',
+            'cover.mimes'      => 'Format cover harus berupa gambar (JPG, JPEG, PNG, atau WEBP).',
         ];
     }
 }

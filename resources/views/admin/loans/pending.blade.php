@@ -30,8 +30,8 @@
                 <h2 class="text-lg font-bold font-heading text-stone-900">Pengajuan Pengembalian Buku ({{ $returns->count() }})</h2>
             </div>
             <div class="bg-white rounded-2xl border border-emerald-200 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="overflow-x-auto w-full scrollbar-thin">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
                         <thead>
                             <tr class="bg-emerald-50/70 border-b border-emerald-100 text-emerald-900 text-xs uppercase tracking-wider">
                                 <th class="px-6 py-4 font-semibold">Peminjam</th>
@@ -104,8 +104,8 @@
                 <h2 class="text-lg font-bold font-heading text-stone-900">Konfirmasi Pembayaran Denda ({{ $finePayments->count() }})</h2>
             </div>
             <div class="bg-white rounded-2xl border border-amber-200 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="overflow-x-auto w-full scrollbar-thin">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
                         <thead>
                             <tr class="bg-amber-50/70 border-b border-amber-100 text-amber-900 text-xs uppercase tracking-wider">
                                 <th class="px-6 py-4 font-semibold">Peminjam</th>
@@ -169,8 +169,8 @@
                 <h2 class="text-lg font-bold font-heading text-stone-900">Pengajuan Perpanjangan Peminjaman ({{ $renewals->count() }})</h2>
             </div>
             <div class="bg-white rounded-2xl border border-blue-200 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="overflow-x-auto w-full scrollbar-thin">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
                         <thead>
                             <tr class="bg-blue-50/60 border-b border-blue-100 text-blue-900 text-xs uppercase tracking-wider">
                                 <th class="px-6 py-4 font-semibold">Peminjam</th>
@@ -260,8 +260,8 @@
     </div>
 
     <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+        <div class="overflow-x-auto w-full scrollbar-thin">
+            <table class="w-full text-left border-collapse min-w-[760px]">
                 <thead>
                     <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
                         <th class="px-6 py-4 font-semibold">Pemohon</th>
