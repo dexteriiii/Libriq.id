@@ -22,20 +22,20 @@ class BooksTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'isbn' => '9789790152786',
-            'title' => 'Hutan Hujan (Seri Ada Apa Di Bumi? Bioma)',
-                'author' => 'dada',
-                'publisher' => 'Erlangga for Kids',
-                'publish_year' => 2000,
-                'synopsis' => 'ada',
-                'category' => 'novel',
-                'cover_url' => 'https://books.google.com/books/content?id=h7rqmmR5V9AC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
-                'cover_path' => NULL,
-                'rack_location' => NULL,
+                'isbn' => '9789792278095',
+                'title' => 'Laskar Pelangi',
+                'author' => 'Andrea Hirata',
+                'publisher' => 'Bentang Pustaka',
+                'publish_year' => 2005,
+                'synopsis' => 'Laskar Pelangi adalah novel pertama karya Andrea Hirata yang menceritakan kisah sepuluh anak dari keluarga miskin di Belitung yang berjuang untuk tetap bersekolah meski kondisi sekolah mereka sangat memprihatinkan. Kisah persahabatan, semangat belajar, dan mimpi yang tak pernah padam menjadi inti dari novel ini. Karya ini telah memenangkan berbagai penghargaan sastra Indonesia dan diadaptasi menjadi film yang sangat sukses.',
+                'category' => 'Fiksi',
+                'cover_url' => 'https://covers.openlibrary.org/b/isbn/9789792278095-L.jpg',
+                'cover_path' => 'covers/Za5rW9n2ykD5kCpDkdQ07JZiCUTDUJpmUwbyAQv7.webp',
+                'rack_location' => 'A-01',
                 'total_stock' => 7,
                 'available_stock' => 7,
                 'created_at' => '2026-09-10 01:29:02',
-                'updated_at' => '2026-09-25 02:27:33',
+                'updated_at' => '2026-11-04 02:48:32',
             ),
             1 => 
             array (
@@ -53,7 +53,7 @@ class BooksTableSeeder extends Seeder
                 'total_stock' => 6,
                 'available_stock' => 5,
                 'created_at' => '2026-09-10 01:50:37',
-                'updated_at' => '2026-09-25 04:15:51',
+                'updated_at' => '2026-11-04 01:27:04',
             ),
             2 => 
             array (
@@ -68,10 +68,10 @@ class BooksTableSeeder extends Seeder
                 'cover_url' => 'https://covers.openlibrary.org/b/isbn/9780134494166-L.jpg',
                 'cover_path' => NULL,
                 'rack_location' => 'T-01-A',
-                'total_stock' => 5,
-                'available_stock' => 5,
+                'total_stock' => 6,
+                'available_stock' => 6,
                 'created_at' => '2026-09-17 02:16:44',
-                'updated_at' => '2026-09-17 02:16:44',
+                'updated_at' => '2026-10-19 05:10:43',
             ),
             3 => 
             array (
@@ -81,15 +81,15 @@ class BooksTableSeeder extends Seeder
                 'author' => 'Henry Manampiring',
                 'publisher' => 'Penerbit Buku Kompas',
                 'publish_year' => 2018,
-                'synopsis' => 'Penerapan filsafat Stoisisme dalam kehidupan sehari-hari untuk mengatasi emosi negatif dan mental toughness.',
+                'synopsis' => 'Penerapan filsafat Stoisisme dalam kehidupan sehari-hari.',
                 'category' => 'Filsafat',
-                'cover_url' => 'https://covers.openlibrary.org/b/isbn/9786024125189-L.jpg',
-                'cover_path' => NULL,
+                'cover_url' => NULL,
+                'cover_path' => 'covers/DKvIiIts5on338j9eACQ5sPtmXKH9vTz095q3gkv.jpg',
                 'rack_location' => 'F-04-C',
                 'total_stock' => 3,
                 'available_stock' => 3,
-                'created_at' => '2026-09-17 02:16:44',
-                'updated_at' => '2026-09-17 02:16:44',
+                'created_at' => NULL,
+                'updated_at' => NULL,
             ),
             4 => 
             array (
@@ -159,9 +159,9 @@ class BooksTableSeeder extends Seeder
                 'cover_path' => NULL,
                 'rack_location' => NULL,
                 'total_stock' => 4,
-                'available_stock' => 3,
+                'available_stock' => 2,
                 'created_at' => '2026-09-25 02:27:33',
-                'updated_at' => '2026-09-25 02:27:33',
+                'updated_at' => '2026-10-22 01:34:54',
             ),
             8 => 
             array (
@@ -177,9 +177,9 @@ class BooksTableSeeder extends Seeder
                 'cover_path' => NULL,
                 'rack_location' => NULL,
                 'total_stock' => 5,
-                'available_stock' => 4,
+                'available_stock' => 2,
                 'created_at' => '2026-09-25 02:27:33',
-                'updated_at' => '2026-09-25 02:27:33',
+                'updated_at' => '2026-11-04 02:48:42',
             ),
             9 => 
             array (
@@ -195,9 +195,9 @@ class BooksTableSeeder extends Seeder
                 'cover_path' => NULL,
                 'rack_location' => NULL,
                 'total_stock' => 2,
-                'available_stock' => 2,
+                'available_stock' => 1,
                 'created_at' => '2026-09-25 02:27:33',
-                'updated_at' => '2026-09-25 02:27:33',
+                'updated_at' => '2026-11-02 01:46:37',
             ),
             10 => 
             array (
@@ -213,9 +213,9 @@ class BooksTableSeeder extends Seeder
                 'cover_path' => NULL,
                 'rack_location' => NULL,
                 'total_stock' => 1,
-                'available_stock' => 1,
+                'available_stock' => 0,
                 'created_at' => '2026-09-25 02:27:33',
-                'updated_at' => '2026-09-25 02:27:33',
+                'updated_at' => '2026-10-22 01:07:14',
             ),
             11 => 
             array (

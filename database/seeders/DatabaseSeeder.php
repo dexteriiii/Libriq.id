@@ -19,5 +19,9 @@ class DatabaseSeeder extends Seeder
             LoansTableSeeder::class,
             SettingsTableSeeder::class,
         ]);
+        $this->call(BooksTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
+        $this->call(LoansTableSeeder::class);
+        $this->call(SettingsTableSeeder::class);
     }
 }
