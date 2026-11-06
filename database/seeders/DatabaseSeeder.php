@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,15 +14,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         $this->call([
             UsersTableSeeder::class,
             BooksTableSeeder::class,
             LoansTableSeeder::class,
             SettingsTableSeeder::class,
         ]);
-        $this->call(BooksTableSeeder::class);
-        $this->call(UsersTableSeeder::class);
-        $this->call(LoansTableSeeder::class);
-        $this->call(SettingsTableSeeder::class);
+
+        Schema::enableForeignKeyConstraints();
     }
 }
