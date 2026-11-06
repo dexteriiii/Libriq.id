@@ -173,6 +173,8 @@ class GoogleBooksService
             $coverUrl = $book['cover']['large'] ?? $book['cover']['medium'] ?? $book['cover']['small'] ?? null;
             if ($coverUrl) {
                 $coverUrl = str_replace('http://', 'https://', $coverUrl);
+                // Paksa ukuran terbesar dari Open Library cover
+                $coverUrl = preg_replace('/-[SML]\.jpg$/', '-L.jpg', $coverUrl);
             }
 
             return [
@@ -251,11 +253,19 @@ class GoogleBooksService
             }
         }
 
-        $thumbnail = $info['imageLinks']['thumbnail']
+        $thumbnail = $info['imageLinks']['extraLarge']
+            ?? $info['imageLinks']['large']
+            ?? $info['imageLinks']['medium']
+            ?? $info['imageLinks']['thumbnail']
             ?? $info['imageLinks']['smallThumbnail']
             ?? null;
         if ($thumbnail) {
+            // Paksa HTTPS
             $thumbnail = str_replace('http://', 'https://', $thumbnail);
+            // Upgrade resolusi: hapus zoom & edge=curl, ganti ke zoom=0 (resolusi penuh)
+            $thumbnail = preg_replace('/&zoom=\d+/', '', $thumbnail);
+            $thumbnail = preg_replace('/&edge=\w+/', '', $thumbnail);
+            $thumbnail .= '&fife=w800-h1200';
         }
 
         return [

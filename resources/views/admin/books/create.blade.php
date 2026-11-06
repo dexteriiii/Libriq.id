@@ -57,7 +57,6 @@
             publish_year: '{{ old('publish_year') }}',
             synopsis: '{{ old('synopsis') }}',
             category: '{{ old('category') }}',
-            rack_location: '{{ old('rack_location') }}',
             total_stock: '{{ old('total_stock', 1) }}',
             cover_url: '{{ old('cover_url') }}'
         },
@@ -194,11 +193,6 @@
                 <div>
                     <label class="block text-sm font-medium text-stone-700 mb-1">Kategori</label>
                     <input type="text" name="category" x-model="formData.category" placeholder="mis. Teknologi, Filsafat, Fiksi" class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-stone-700 mb-1">Lokasi Rak Fisik</label>
-                    <input type="text" name="rack_location" x-model="formData.rack_location" placeholder="mis. T-01-A" class="w-full px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 font-mono">
                 </div>
 
                 <div>

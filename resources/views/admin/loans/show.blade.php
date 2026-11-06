@@ -68,7 +68,7 @@
                     <div>
                         <p class="font-bold text-stone-900">{{ $loan->book?->title }}</p>
                         <p class="text-xs text-stone-500">{{ $loan->book?->author }}</p>
-                        <p class="text-xs text-stone-500 font-mono mt-1">ISBN: {{ $loan->book?->isbn }} | Rak: {{ $loan->book?->rack_location ?? '-' }}</p>
+                        <p class="text-xs text-stone-500 font-mono mt-1">ISBN: {{ $loan->book?->isbn }}</p>
                     </div>
                 </div>
             </div>

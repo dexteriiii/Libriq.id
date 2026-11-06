@@ -25,6 +25,7 @@ class Book extends Model
     /**
      * URL cover final: prioritaskan upload lokal (cover_path),
      * fallback ke cover_url dari Google Books API.
+     * URL Google Books di-upgrade ke resolusi HD (fife parameter).
      */
     public function getCoverAttribute(): string
     {
@@ -32,7 +33,28 @@ class Book extends Model
             return asset('storage/' . $this->cover_path);
         }
 
-        return $this->cover_url ?: asset('images/book-placeholder.png');
+        if ($this->cover_url) {
+            $url = $this->cover_url;
+
+            // Upgrade Google Books thumbnail ke resolusi HD
+            if (str_contains($url, 'books.google') || str_contains($url, 'googleapis.com')) {
+                $url = str_replace('http://', 'https://', $url);
+                $url = preg_replace('/&zoom=\d+/', '', $url);
+                $url = preg_replace('/&edge=\w+/', '', $url);
+                // Hapus fife lama jika ada, ganti ke HD
+                $url = preg_replace('/&fife=[^&]+/', '', $url);
+                $url .= '&fife=w800-h1200';
+            }
+
+            // Upgrade Open Library cover ke ukuran Large
+            if (str_contains($url, 'covers.openlibrary.org')) {
+                $url = preg_replace('/-[SML]\.jpg$/', '-L.jpg', $url);
+            }
+
+            return $url;
+        }
+
+        return asset('images/book-placeholder.png');
     }
 
     public function getStockStatusAttribute(): string

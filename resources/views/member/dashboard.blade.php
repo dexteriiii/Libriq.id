@@ -8,7 +8,7 @@
             </div>
             <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                    <h1 class="font-heading text-lg sm:text-2xl font-bold text-stone-900 truncate">Halo, {{ auth()->user()->name }} 👋</h1>
+                    <h1 class="font-heading text-lg sm:text-2xl font-bold text-stone-900 truncate">Halo, {{ auth()->user()->name }} </h1>
                     <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-[10px] sm:text-xs font-semibold rounded-full shrink-0">Anggota</span>
                 </div>
                 <div class="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-1 text-xs text-stone-500 mt-1">

@@ -17,8 +17,12 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
         <div class="md:col-span-1">
-            <div class="max-w-xs mx-auto md:max-w-none aspect-[2/3] rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm">
-                <img src="{{ $book->cover }}" alt="{{ $book->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/300x400/f5f5f4/a8a29e?text=No+Cover';">
+            <div class="max-w-xs mx-auto md:max-w-none aspect-[2/3] rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-md">
+                <img src="{{ $book->cover }}"
+                     alt="{{ $book->title }}"
+                     class="w-full h-full object-contain"
+                     loading="eager"
+                     onerror="this.onerror=null; this.src='https://placehold.co/400x600/f5f5f4/a8a29e?text=No+Cover';">
             </div>
         </div>
 
@@ -38,10 +42,6 @@
                 <div>
                     <dt class="text-xs text-stone-400 font-medium">Kategori</dt>
                     <dd class="text-stone-900 font-medium mt-0.5">{{ $book->category ?: '—' }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs text-stone-400 font-medium">Lokasi Rak</dt>
-                    <dd class="font-mono-code text-stone-900 font-medium mt-0.5">{{ $book->rack_location ?: '—' }}</dd>
                 </div>
             </dl>
 

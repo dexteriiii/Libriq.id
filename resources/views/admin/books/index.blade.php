@@ -67,7 +67,7 @@
                 <thead>
                     <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
                         <th class="px-6 py-4 font-semibold">Buku & Metadata</th>
-                        <th class="px-6 py-4 font-semibold">Kategori / Rak</th>
+                        <th class="px-6 py-4 font-semibold">Kategori</th>
                         <th class="px-6 py-4 font-semibold text-center">Stok Total</th>
                         <th class="px-6 py-4 font-semibold text-center">Tersedia</th>
                         <th class="px-6 py-4 font-semibold text-right">Aksi</th>
@@ -92,7 +92,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="text-stone-900">{{ $book->category ?? 'Umum' }}</div>
-                                <div class="text-stone-500 text-xs mt-0.5 font-mono">Rak: {{ $book->rack_location ?? '-' }}</div>
+
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <span class="text-stone-900 font-medium">{{ $book->total_stock }}</span>

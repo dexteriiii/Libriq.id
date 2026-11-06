@@ -277,7 +277,6 @@
                 <th>Judul Buku</th>
                 <th style="width: 100px;">Pengarang</th>
                 <th style="width: 70px;">Kategori</th>
-                <th style="width: 45px; text-align: center;">Rak</th>
                 <th style="width: 40px; text-align: center;">Total</th>
                 <th style="width: 40px; text-align: center;">Tersedia</th>
             </tr>
@@ -290,7 +289,6 @@
                     <td><strong>{{ $book->title }}</strong></td>
                     <td>{{ $book->author }}</td>
                     <td>{{ $book->category }}</td>
-                    <td style="text-align: center;">{{ $book->rack_location ?? '-' }}</td>
                     <td style="text-align: center;">{{ $book->total_stock }}</td>
                     <td style="text-align: center; font-weight: bold; color: {{ $book->available_stock > 0 ? '#15803d' : '#dc2626' }};">
                         {{ $book->available_stock }}

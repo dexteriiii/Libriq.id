@@ -24,7 +24,7 @@ class CatalogController extends Controller
             $query->where('category', $category);
         }
 
-        $books = $query->orderBy('title')->paginate(12)->withQueryString();
+        $books = $query->orderBy('title')->paginate(15)->withQueryString();
 
         $categories = Book::query()
             ->select('category')

@@ -21,7 +21,6 @@ class StoreBookRequest extends FormRequest
             'publish_year'  => ['nullable', 'integer', 'min:1000', 'max:' . date('Y')],
             'synopsis'      => ['nullable', 'string'],
             'category'      => ['nullable', 'string', 'max:100'],
-            'rack_location' => ['nullable', 'string', 'max:50'],
             'total_stock'   => ['required', 'integer', 'min:1'],
             'cover_url'     => ['nullable', 'url', 'max:500'],
             'cover'         => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,jfif', 'max:2048'],

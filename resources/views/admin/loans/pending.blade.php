@@ -283,7 +283,7 @@
                             <td class="px-6 py-4">
                                 <div class="text-stone-900 font-medium line-clamp-1">{{ $loan->book?->title }}</div>
                                 <div class="text-stone-500 text-xs font-mono">ISBN: {{ $loan->book?->isbn }}</div>
-                                <div class="text-stone-500 text-xs font-mono">Rak: {{ $loan->book?->rack_location ?? '-' }}</div>
+
                             </td>
                             <td class="px-6 py-4">
                                 @if($loan->verification_code)

@@ -8,7 +8,7 @@
             </div>
             <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                    <h1 class="text-lg sm:text-2xl font-bold font-heading text-stone-900 truncate">Halo, {{ auth()->user()?->name }} 👋</h1>
+                    <h1 class="text-lg sm:text-2xl font-bold font-heading text-stone-900 truncate">Halo, {{ auth()->user()?->name }}</h1>
                     <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-[10px] sm:text-xs font-semibold rounded-full shrink-0">Administrator</span>
                 </div>
                 <p class="text-stone-500 text-xs sm:text-sm mt-0.5 leading-relaxed">Ringkasan aktivitas sirkulasi dan inventaris perpustakaan Libriq.id hari ini.</p>
