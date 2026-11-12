@@ -51,20 +51,20 @@ Route::middleware('auth')->group(function () {
 // Admin Routes (terpisah — middleware diatur di dalam admin.php)
 require __DIR__.'/admin.php';
 
-// Route bantuan untuk menjalankan migrasi & seed dari browser di Vercel
+// Route bantuan untuk menjalankan migrasi & seed otomatis dari browser di Vercel
 Route::get('/deploy-migrate-init', function () {
     try {
-        Artisan::call('migrate', ['--force' => true]);
-        $outputMigrate = Artisan::output();
-
-        Artisan::call('db:seed', ['--force' => true]);
-        $outputSeed = Artisan::output();
+        // Jalankan migrasi fresh (bersihkan dan buat ulang sesuai struktur Laravel persis)
+        Artisan::call('migrate:fresh', [
+            '--force' => true,
+            '--seed' => true,
+        ]);
+        $output = Artisan::output();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Migrasi dan seeder berhasil dijalankan di Supabase!',
-            'migrate_output' => $outputMigrate,
-            'seed_output' => $outputSeed,
+            'message' => 'Database Supabase berhasil di-sinkronkan 100% otomatis!',
+            'details' => $output,
         ]);
     } catch (\Throwable $e) {
         return response()->json([
