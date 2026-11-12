@@ -51,6 +51,30 @@ Route::middleware('auth')->group(function () {
 // Admin Routes (terpisah — middleware diatur di dalam admin.php)
 require __DIR__.'/admin.php';
 
+// Route bantuan untuk menjalankan migrasi & seed dari browser di Vercel
+Route::get('/deploy-migrate-init', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        $outputMigrate = Artisan::output();
+
+        Artisan::call('db:seed', ['--force' => true]);
+        $outputSeed = Artisan::output();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Migrasi dan seeder berhasil dijalankan di Supabase!',
+            'migrate_output' => $outputMigrate,
+            'seed_output' => $outputSeed,
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ], 500);
+    }
+});
+
 // Fallback route untuk file storage jika symlink Windows tidak aktif / belum di-link
 Route::get('/storage/{path}', function (string $path) {
     if (Storage::disk('public')->exists($path)) {
