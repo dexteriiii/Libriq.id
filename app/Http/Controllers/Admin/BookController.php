@@ -122,7 +122,8 @@ class BookController extends Controller
 
         // Upload cover jika ada
         if ($request->hasFile('cover')) {
-            $validated['cover_path'] = $request->file('cover')->store('covers', 'public');
+            $disk = config('filesystems.default', 'public');
+            $validated['cover_path'] = $request->file('cover')->store('covers', $disk);
         }
 
         // available_stock = total_stock saat pertama kali dibuat
@@ -150,11 +151,12 @@ class BookController extends Controller
         $validated = $request->validated();
 
         if ($request->hasFile('cover')) {
+            $disk = config('filesystems.default', 'public');
             // Hapus file lama jika ada
             if ($book->cover_path) {
-                Storage::disk('public')->delete($book->cover_path);
+                Storage::disk($disk)->delete($book->cover_path);
             }
-            $validated['cover_path'] = $request->file('cover')->store('covers', 'public');
+            $validated['cover_path'] = $request->file('cover')->store('covers', $disk);
         }
 
         // Sinkronkan available_stock jika total_stock berubah

@@ -43,6 +43,12 @@ class User extends Authenticatable
             if (str_starts_with($this->avatar_path, 'http://') || str_starts_with($this->avatar_path, 'https://')) {
                 return $this->avatar_path;
             }
+
+            // Jika file avatar bawaan yang ada di /public/storage/
+            if (file_exists(public_path('storage/' . $this->avatar_path))) {
+                return asset('storage/' . $this->avatar_path);
+            }
+
             return Storage::disk(config('filesystems.default', 'public'))->url($this->avatar_path);
         }
 

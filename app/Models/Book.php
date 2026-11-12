@@ -33,6 +33,12 @@ class Book extends Model
             if (str_starts_with($this->cover_path, 'http://') || str_starts_with($this->cover_path, 'https://')) {
                 return $this->cover_path;
             }
+
+            // Jika file bawaan seeding lokal yang ada di /public/storage/
+            if (file_exists(public_path('storage/' . $this->cover_path))) {
+                return asset('storage/' . $this->cover_path);
+            }
+
             return Storage::disk(config('filesystems.default', 'public'))->url($this->cover_path);
         }
 
