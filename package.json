@@ -2,7 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
+        "build": "vite build && mkdir -p public/storage && cp -r storage/app/public/* public/storage/ || true",
         "dev": "vite",
         "postinstall": "prisma skills sync || exit 0"
     },
