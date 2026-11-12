@@ -34,12 +34,24 @@ class Book extends Model
                 return $this->cover_path;
             }
 
-            // Jika file bawaan seeding lokal yang ada di /public/storage/
+            // Jika upload di Supabase Storage / S3
+            if (config('filesystems.default') === 's3') {
+                $endpoint = rtrim(env('AWS_ENDPOINT', ''), '/');
+                $bucket = env('AWS_BUCKET', 'libriq');
+                // Format URL publik Supabase Storage
+                if (str_contains($endpoint, 'supabase.co')) {
+                    $projectUrl = explode('/storage/v1/s3', $endpoint)[0];
+                    return "{$projectUrl}/storage/v1/object/public/{$bucket}/{$this->cover_path}";
+                }
+                return Storage::disk('s3')->url($this->cover_path);
+            }
+
+            // Fallback disk lokal
             if (file_exists(public_path('storage/' . $this->cover_path))) {
                 return asset('storage/' . $this->cover_path);
             }
 
-            return Storage::disk(config('filesystems.default', 'public'))->url($this->cover_path);
+            return Storage::disk('public')->url($this->cover_path);
         }
 
         if ($this->cover_url) {
