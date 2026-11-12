@@ -30,7 +30,10 @@ class Book extends Model
     public function getCoverAttribute(): string
     {
         if ($this->cover_path) {
-            return asset('storage/' . $this->cover_path);
+            if (str_starts_with($this->cover_path, 'http://') || str_starts_with($this->cover_path, 'https://')) {
+                return $this->cover_path;
+            }
+            return Storage::disk(config('filesystems.default', 'public'))->url($this->cover_path);
         }
 
         if ($this->cover_url) {
