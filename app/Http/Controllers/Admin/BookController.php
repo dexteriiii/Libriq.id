@@ -154,7 +154,9 @@ class BookController extends Controller
             $disk = config('filesystems.default', 'public');
             // Hapus file lama jika ada
             if ($book->cover_path) {
-                Storage::disk($disk)->delete($book->cover_path);
+                try {
+                    Storage::disk($disk)->delete($book->cover_path);
+                } catch (\Throwable $e) {}
             }
             $validated['cover_path'] = $request->file('cover')->store('covers', $disk);
         }

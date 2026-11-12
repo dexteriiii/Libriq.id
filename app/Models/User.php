@@ -44,8 +44,13 @@ class User extends Authenticatable
                 return $this->avatar_path;
             }
 
-            // Jika upload di Supabase Storage / S3
-            if (config('filesystems.default') === 's3') {
+            // Prioritaskan file avatar bawaan yang ada di folder publik aplikasi
+            if (file_exists(public_path('storage/' . $this->avatar_path))) {
+                return asset('storage/' . $this->avatar_path);
+            }
+
+            // Jika file hasil upload di Supabase Storage / S3
+            if (config('filesystems.default') === 's3' || env('FILESYSTEM_DISK') === 's3') {
                 $endpoint = rtrim(env('AWS_ENDPOINT', ''), '/');
                 $bucket = env('AWS_BUCKET', 'libriq');
                 if (str_contains($endpoint, 'supabase.co')) {
@@ -53,11 +58,6 @@ class User extends Authenticatable
                     return "{$projectUrl}/storage/v1/object/public/{$bucket}/{$this->avatar_path}";
                 }
                 return Storage::disk('s3')->url($this->avatar_path);
-            }
-
-            // Fallback disk lokal
-            if (file_exists(public_path('storage/' . $this->avatar_path))) {
-                return asset('storage/' . $this->avatar_path);
             }
 
             return Storage::disk('public')->url($this->avatar_path);

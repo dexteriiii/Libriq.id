@@ -35,15 +35,19 @@ class ProfileController extends Controller
         $disk = config('filesystems.default', 'public');
 
         if ($request->boolean('remove_avatar')) {
-            if ($user->avatar_path && Storage::disk($disk)->exists($user->avatar_path)) {
-                Storage::disk($disk)->delete($user->avatar_path);
+            if ($user->avatar_path) {
+                try {
+                    Storage::disk($disk)->delete($user->avatar_path);
+                } catch (\Throwable $e) {}
             }
             $validated['avatar_path'] = null;
         }
 
         if ($request->hasFile('avatar')) {
-            if ($user->avatar_path && Storage::disk($disk)->exists($user->avatar_path)) {
-                Storage::disk($disk)->delete($user->avatar_path);
+            if ($user->avatar_path) {
+                try {
+                    Storage::disk($disk)->delete($user->avatar_path);
+                } catch (\Throwable $e) {}
             }
             $validated['avatar_path'] = $request->file('avatar')->store('avatars', $disk);
         }
