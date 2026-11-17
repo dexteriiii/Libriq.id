@@ -11,6 +11,11 @@
             {{ session('success') }}
         </div>
     @endif
+    @if (session('error'))
+        <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
     @if ($errors->any())
         <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">
             <div class="font-bold mb-1">Terjadi kesalahan validasi:</div>

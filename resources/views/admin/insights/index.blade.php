@@ -21,6 +21,17 @@
         </div>
     </div>
 
+    @if (session('success'))
+        <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- Top Highlights Grid --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {{-- Card 1: Kategori Paling Populer --}}

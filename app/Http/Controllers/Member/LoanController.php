@@ -51,7 +51,7 @@ class LoanController extends Controller
                 ->count();
 
             if ($activeLoanCount >= $maxActiveLoans) {
-                return back()->with('error', "Kamu sudah mencapai batas maksimum {$maxActiveLoans} peminjaman aktif.");
+                return back()->with('error', "Batas pinjam buku kamu sudah habis! Kamu telah meminjam {$activeLoanCount} dari maksimal {$maxActiveLoans} buku yang diizinkan. Silakan kembalikan buku terlebih dahulu untuk meminjam buku lain.");
             }
         }
 

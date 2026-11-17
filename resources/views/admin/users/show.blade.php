@@ -14,6 +14,17 @@
         </div>
     </div>
 
+    @if (session('success'))
+        <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- User Summary Card --}}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm flex items-center gap-4">

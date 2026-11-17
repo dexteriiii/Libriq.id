@@ -14,7 +14,8 @@ class ProfilePhotoUploadTest extends TestCase
 
     public function test_admin_can_upload_profile_photo_and_see_it_on_dashboard(): void
     {
-        Storage::fake('public');
+        $disk = config('filesystems.default', 'public');
+        Storage::fake($disk);
 
         $admin = User::factory()->create([
             'name' => 'Admin Perpustakaan',
@@ -35,7 +36,7 @@ class ProfilePhotoUploadTest extends TestCase
 
         $admin->refresh();
         $this->assertNotNull($admin->avatar_path);
-        Storage::disk('public')->assertExists($admin->avatar_path);
+        Storage::disk($disk)->assertExists($admin->avatar_path);
 
         $dashboardResponse = $this->actingAs($admin)->get(route('admin.dashboard'));
         $dashboardResponse->assertStatus(200);
@@ -44,7 +45,8 @@ class ProfilePhotoUploadTest extends TestCase
 
     public function test_member_can_upload_profile_photo_and_see_it_on_dashboard(): void
     {
-        Storage::fake('public');
+        $disk = config('filesystems.default', 'public');
+        Storage::fake($disk);
 
         $member = User::factory()->create([
             'name' => 'Member Pembaca',
@@ -66,7 +68,8 @@ class ProfilePhotoUploadTest extends TestCase
 
         $member->refresh();
         $this->assertNotNull($member->avatar_path);
-        Storage::disk('public')->assertExists($member->avatar_path);
+        $disk = config('filesystems.default', 'public');
+        Storage::disk($disk)->assertExists($member->avatar_path);
 
         $dashboardResponse = $this->actingAs($member)->get(route('member.dashboard'));
         $dashboardResponse->assertStatus(200);
@@ -75,7 +78,8 @@ class ProfilePhotoUploadTest extends TestCase
 
     public function test_old_photo_is_deleted_when_uploading_new_photo(): void
     {
-        Storage::fake('public');
+        $disk = config('filesystems.default', 'public');
+        Storage::fake($disk);
 
         $member = User::factory()->create([
             'role' => 'member',
@@ -91,7 +95,7 @@ class ProfilePhotoUploadTest extends TestCase
 
         $member->refresh();
         $firstPath = $member->avatar_path;
-        Storage::disk('public')->assertExists($firstPath);
+        Storage::disk($disk)->assertExists($firstPath);
 
         // Upload second avatar
         $secondFile = UploadedFile::fake()->create('second.png', 100, 'image/png');
@@ -104,8 +108,9 @@ class ProfilePhotoUploadTest extends TestCase
         $member->refresh();
         $secondPath = $member->avatar_path;
 
+        $disk = config('filesystems.default', 'public');
         $this->assertNotEquals($firstPath, $secondPath);
-        Storage::disk('public')->assertMissing($firstPath);
-        Storage::disk('public')->assertExists($secondPath);
+        Storage::disk($disk)->assertMissing($firstPath);
+        Storage::disk($disk)->assertExists($secondPath);
     }
 }

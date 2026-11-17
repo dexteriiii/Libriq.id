@@ -9,6 +9,11 @@
             {{ session('success') }}
         </div>
     @endif
+    @if (session('error'))
+        <div class="rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 mb-6">
+            {{ session('error') }}
+        </div>
+    @endif
 
     @if ($errors->any())
         <div class="rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm p-4 mb-6">

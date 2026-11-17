@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class CatalogController extends Controller
@@ -51,9 +52,19 @@ class CatalogController extends Controller
             ->whereIn('status', ['pending', 'borrowed', 'overdue'])
             ->first();
 
+        // Cek kuota pinjaman aktif
+        $maxActiveLoans = (int) Setting::get('max_active_loans', 0);
+        $activeLoansCount = $user->loans()
+            ->whereIn('status', ['pending', 'borrowed', 'overdue'])
+            ->count();
+        $isLoanLimitReached = ($maxActiveLoans > 0 && $activeLoansCount >= $maxActiveLoans);
+
         return view('member.catalog.show', [
-            'book'             => $book,
-            'alreadyRequested' => $alreadyRequested,
+            'book'               => $book,
+            'alreadyRequested'   => $alreadyRequested,
+            'maxActiveLoans'     => $maxActiveLoans,
+            'activeLoansCount'   => $activeLoansCount,
+            'isLoanLimitReached' => $isLoanLimitReached,
         ]);
     }
 }
