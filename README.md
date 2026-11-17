@@ -6,7 +6,7 @@ Platform manajemen perpustakaan modern berbasis web yang mendigitalisasi alur si
 
 ## 🌐 Link Hasil Hosting
 Aplikasi telah di-deploy dan dapat diakses publik melalui:  
-👉 **[https://libriq-id-b5rwx.sprites.app](https://libriq-id-b5rwx.sprites.app)**
+👉 **[https://libriq-id.vercel.app/](https://libriq-id.vercel.app/)**
 
 🧑Akun Demo Admin 👉 admin@gmail.com
                   🔒  password
