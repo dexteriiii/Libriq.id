@@ -21,3 +21,10 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# AI agent directories and artifacts
+/.agents
+/.claude
+/.cursor
+/.devin
+/brain
